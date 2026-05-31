@@ -30,14 +30,19 @@ appear) are not included. Nothing here points back to a person.
 
 ```
 README.md                    <- you are here
+INDEX.md                     <- one-screen map of everything
 QUERIES.md                   <- the question pack (prompts + SQL)
-METHOD_AND_LIMITS.md         <- what it can and can't tell you (read this)
 SAMPLE_SEARCHES_EXPLAINED.md <- worked searches: sample vs full, fair limits
+METHOD_AND_LIMITS.md         <- what it can and can't tell you (read this)
+SOURCE_AND_VERIFICATION.md   <- where the data comes from + how to verify it
+FAQ.md                       <- common questions
+LICENSE                      <- MIT (code) + CC0 / public-domain (data)
+CITATION.cff                 <- how to cite this dataset
+MANIFEST_SHA256.txt          <- SHA256 for every file (incl. the Proton full file)
 make_reader_sample_csv.py    <- make your own sample (by year/vaccine/symptom/id list)
 data/
-  vaers_sample_1000.csv       <- taster
-  vaers_1990_2026_69col.csv.gz   <- full dataset
-  extracts/                  <- the actual rows behind the headline questions
+  vaers_sample_1000.csv         <- 1,000-row taster
+  extracts/                     <- the actual rows behind the headline questions
     Q04_myocarditis_pericarditis_males_u30.csv
     R3_deaths_over65.csv
     PREG_pregnancy_related.csv
@@ -46,8 +51,7 @@ data/
     Q03_mortality_by_manufacturer.csv
     Q06_lot_clustering_top.csv
     Q07_reports_by_state.csv
-SOURCE_AND_VERIFICATION.md   <- where the data comes from + how to verify it
-MANIFEST_SHA256.txt          <- checksums for everything above
+  vaers_1990_2026_69col.csv.gz  <- FULL dataset (~95 MB) — on the Proton mirror, not in the GitHub repo
 ```
 
 ## The fastest way to test it
