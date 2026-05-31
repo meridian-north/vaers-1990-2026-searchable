@@ -1,0 +1,11 @@
+# The full dataset goes to a GitHub Release (up to 2 GB/asset), NOT into git
+# history. Keeping a ~95 MB binary out of the repo keeps clones fast and avoids
+# the 100 MB hard limit. The file still lives on disk for `gh release create`.
+data/vaers_1990_2026_69col.csv.gz
+data/vaers_1990_2026_69col.csv
+
+# packaging / OS cruft that shouldn't be committed
+.DS_Store
+**/.DS_Store
+vaers_reader_bundle.zip
+finalize_bundle.sh

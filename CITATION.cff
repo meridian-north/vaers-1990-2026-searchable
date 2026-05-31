@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use this dataset, please cite it as below."
+title: "VAERS 1990–2026, searchable: a PII-free structured derivative of the U.S. Vaccine Adverse Event Reporting System"
+abstract: >-
+  A clean, structured, privacy-preserving derivative of the U.S. VAERS
+  dataset (1990–2026), organized in a uniform 69-column who/what/when/where/how
+  format. Built only from structured coded fields (no free-text), with the
+  derivation method, sample data, pre-pulled query results, and verification
+  path included. Hypothesis-generating signal-detection data, not
+  hypothesis-testing; counts are a floor and carry no denominator.
+authors:
+  - alias: meridian-north
+version: "1.0.0"
+date-released: "2026-05-31"
+license: CC0-1.0
+keywords:
+  - VAERS
+  - pharmacovigilance
+  - vaccine safety
+  - adverse events
+  - open data
+  - reproducible research
+repository-code: "https://github.com/meridian-north/vaers-1990-2026-searchable"
+type: dataset
+references:
+  - type: data
+    title: "VAERS — Vaccine Adverse Event Reporting System (source data)"
+    authors:
+      - name: "U.S. Centers for Disease Control and Prevention / Food and Drug Administration"
+    url: "https://vaers.hhs.gov/data/datasets.html"
+    notes: "Public-domain source. This dataset is a structured derivative."
