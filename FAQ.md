@@ -1,91 +1,124 @@
 # FAQ
 
-### Does this prove vaccines caused these events?
-No. VAERS is a *passive surveillance* system — a report means someone filed a
-report, not that the vaccine caused the event. This data is for spotting signals
-worth investigating (hypothesis-generating), not for proving cause. Treat every
-count as "reports of," not "cases caused by."
-
-### Then why publish counts at all?
-Because the signals are real questions, and the public record should be easy to
-query and hard to misrepresent — in *both* directions. The same data that stops
-someone claiming "X deaths were caused" also stops someone dismissing a genuine
-reporting spike. The honest move is to make it searchable and let people check.
-
-### Why are 2021 numbers so high?
-Several reasons at once: an unprecedented number of doses administered, intense
-public awareness, mandates, and active encouragement to report. A passive system
-reflects reporting behavior as well as underlying events. That's exactly why these
-are hypothesis-generating, not conclusions.
-
-### Can I compute a *rate* (events per million doses)?
-Not from this file alone. VAERS gives you the numerator (reports) but not the
-denominator (doses administered or person-time at risk). Rates require joining
-external CDC dose-administration data, and even then VAERS under-reporting makes
-the result a floor. We don't bake a rate in.
-
-### Is there any personal information in here?
-No. The published files are built only from structured, coded fields. CDC's
-*original* raw files contain free-text narrative boxes that occasionally include
-inadvertent identifiers (a phone number, a ZIP); none of those fields are in this
-dataset. See `SOURCE_AND_VERIFICATION.md`.
-
-### What happens when CDC removes or updates the original file?
-This is a feature, not a problem. CDC revises and re-posts VAERS regularly, and
-reports can be added or deleted. What you have here is a **dated, hash-anchored
-snapshot** (1990–2026, processed on a fixed date) plus per-row content hashes
-(`gn_sha256`) and a file-level manifest. If CDC's live file later differs from
-this snapshot, that divergence is itself observable — and your copy preserves
-exactly what the record said on the processing date. A full provenance-stamped
-archive of the original raw is retained offline for auditors. In short: a mutable
-government source is precisely why a fixed, verifiable snapshot is worth having.
-
-### How do I know you didn't alter the data?
-Three ways: (1) check any file against `MANIFEST_SHA256.txt`; (2) re-derive the
-dataset yourself from CDC's source using the included method — same input + same
-seed → same output; (3) each row carries `gn_sha256`, a content hash tracing it to
-its source record. Disagree with a number? Re-run the query and show where it
-differs.
-
-### Your post says 513 myocarditis cases but the extract shows 617 — which is it?
-Both, measured differently. **617** is all myocarditis/pericarditis reports in
-males under 30 in 2021 across *every* vaccine — that's what the bundled `Q04`
-extract contains. **513** is the subset following an *mRNA* vaccine
-(Pfizer/Moderna). The post says "following mRNA vaccines," so it cites 513; the
-extract is all-vaccine, so it shows 617. Filter `gn_mfr_name` to see it yourself.
-
-### Can I trust a single lot's report count?
-Read it carefully. A report listing two vaccines is counted against each lot named,
-so lot totals can exceed report counts (faithful to the source, not double-counting
-in error). And without a denominator — how many doses each lot represented — a high
-count alone isn't an anomaly. Lot clustering is a question to investigate, not an
-answer.
-
-### Why is the sample so small / why don't my rare-signal searches find much?
-The 1,000-row sample is a doorway, not the dataset. Common breakdowns (year, state,
-manufacturer) hold up at that scale; rare-signal hunts (a symptom in a narrow
-age band, a single lot) collapse to single digits. Use the sample to learn the
-query, then run the full file. See `SAMPLE_SEARCHES_EXPLAINED.md`.
-
-### Why Proton Drive instead of Google Drive?
-Privacy posture. The dataset is public, but the project's principle is to minimize
-third-party tracking of who's reading what. Proton has no API, so it's a manual
-upload — that's a deliberate trade.
-
-### Is the method open? Can I extend it?
-Yes. The build scripts are included; the format is documented in `README.md` and
-the column guide. The same structure (who/what/when/where/how) is source-agnostic,
-so other surveillance datasets can be processed into the identical layout.
-
-### Can you add other countries or data sources?
-That's the roadmap. The same grammar already maps to other jurisdictions'
-adverse-event systems (UK, Australia, Canada, etc.). Those ship in their own
-bundles when ready; this one is U.S. VAERS only.
-
-### How current is the data?
-It runs through 2026 as of the processing date stamped in the files. VAERS itself
-updates continually; re-process from CDC's source when you need a fresher cut.
+Plain answers about what this dataset is, what it can and can't tell you, and
+where the project honestly stands. If you only read one line: **these are
+reports, not proof of cause; the counts are a floor, not a total; there is no
+built-in denominator.** Everything below sits inside that frame.
 
 ---
 
-*Have a question that isn't here? That's what the forum thread is for.*
+## About the data
+
+**What exactly is in here?**
+A clean, searchable copy of public vaccine adverse-event reports, organized so
+you can ask plain questions — who, what, when, where, and how (which vaccine,
+lot, dose). It's built only from the **structured, coded fields**. The
+free-text boxes from the originals — where phone numbers and addresses sometimes
+appear — are not included.
+
+**Is there any personal information?**
+No. Free-text is excluded entirely, so nothing here points back to a person.
+We treat every download link as if it could end up fully public, which is
+exactly why the scrub — not the link — is the guarantee.
+
+**Why are "current illness," "other medications," and "allergies" blank?**
+Because that information lives in the free-text boxes, which we excluded to
+guarantee no PII. The coded symptom terms we *do* carry describe the **reaction**,
+not the patient's medical history.
+
+**Could you capture diagnosis codes or prior conditions?**
+The structured fields don't carry reliable diagnosis codes for prior
+conditions — that history lives in the excluded free-text. Where a source
+provides coded diagnoses, we can surface them. But *deriving* prior conditions
+from what's coded today would be **inference, not fact**, and we won't present
+inference as fact. (This is exactly where a clinician's guidance sharpens the
+work.)
+
+**Why so many columns (the ~69-column file)?**
+That's simply the coded fields laid out flat so any spreadsheet or tool can read
+them — nothing proprietary, nothing you need permission for.
+
+**Is it only VAERS?**
+No. The same treatment is applied to six reporting systems across five
+countries: US VAERS, Australia (TGA DAEN), the UK (MHRA Yellow Card), Canada
+(CVAR), Japan (JADER), plus the Pfizer FOIA release.
+
+---
+
+## How to trust it
+
+**How do I know the numbers are real?**
+You don't have to take our word. Every file has a SHA-256 fingerprint in a
+version-controlled manifest; the full dataset reproduces from a single command;
+and the actual reports behind any answer are right there to read. *Hard to
+assemble, easy to verify.*
+
+**How do I know the toolmaker is impartial?**
+Impartiality is built into the *method*, not asked of the people. We publish
+only the coded fields exactly as the agency recorded them, we never touch the
+free-text, and every output carries a fingerprint you can reproduce yourself.
+We can't put a thumb on the scale without the scale showing it.
+
+---
+
+## Where the project honestly stands
+
+We'd rather show a small thing that works than a big thing that's promised.
+**It is not a Rube Goldberg machine.** Here's the candid status:
+
+| Capability | Status |
+|---|---|
+| Plain-question access to the data | **Working** |
+| Provenance / verifiability | **Working** |
+| PII scrubbing (coded fields only) | **Working** |
+| Reproducibility ("same in, same out") | **Working — earned by repetition** |
+| Federated method (one recipe, many agencies) | **Working proofs — 6 systems, 5 countries published** |
+| Bridging unrelated data sources | **Theoretical** |
+| HIPAA compliance | **Aspirational — would require formal certification; not claimed** |
+
+**Where the differences matter:**
+
+- *Impartiality* — functional to the core (it's in the method, above).
+- *The federation* — early, but with working proofs you can open today.
+- *The repetition* — running the same inputs to the same outputs is what earns
+  the "mil-spec" label; reproducibility is the feature.
+- *Bridging seemingly unrelated sources* — still theoretical; we don't claim it.
+- *Expanding the corpus* — more sources means more of the "who," widening the
+  5W1H coverage over time.
+
+**The old machinery, in one line each:**
+
+- *Microtheories* — guardrails that keep the analysis on-topic and grounded
+  (working, still developing).
+- *BitNet* — the local engine that does the hard scoring work, cheaply and
+  reproducibly.
+
+---
+
+## The "Why" — what we're building now
+
+The four W's and the How tell you *what was reported*. The **Why** asks: is there
+a real signal here worth a clinician's review? That's judgment, not calculation —
+so the machine **triages**, and only a human **concludes.**
+
+**What is it costing?** We'll be candid, including the restarts (we rebuilt the
+machinery a few times getting it right):
+
+- Deliberating the first ~3,000 reports individually cost **~2 million tokens**
+  of local AI work.
+- The full individual pass over ~2 million reports — the gold standard — is an
+  estimated **~1.3 billion tokens: months** on our hardware. We expect to finish
+  by **July**, on our own if we must.
+- We also built an affordable shortcut — **cohort distillation** — that
+  approximates the full Why for **tens of millions of tokens, in hours**, by
+  grouping similar reports, deliberating a sample, and inheriting the verdict
+  where the sample clearly agrees.
+
+**Why bother?** Because the four W's are inventory and the Why is triage — a way
+to narrow two million reports to the handful worth a clinician's attention. The
+machine takes care of the data core so people can spend their time where only
+people are any good.
+
+---
+
+*Assembled by GarrisonNode. The method travels with the data.*
