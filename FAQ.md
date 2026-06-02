@@ -39,9 +39,10 @@ That's simply the coded fields laid out flat so any spreadsheet or tool can read
 them — nothing proprietary, nothing you need permission for.
 
 **Is it only VAERS?**
-No. The same treatment is applied to six reporting systems across five
-countries: US VAERS, Australia (TGA DAEN), the UK (MHRA Yellow Card), Canada
-(CVAR), Japan (JADER), plus the Pfizer FOIA release.
+No. The same treatment is applied to five national reporting systems across
+five countries — US VAERS, Australia (TGA DAEN), the UK (MHRA Yellow Card),
+Canada (CVAR), Japan (JADER) — plus the Pfizer FOIA release (a different kind
+of source: trial documents, not a national reporting system).
 
 ---
 
@@ -72,7 +73,7 @@ We'd rather show a small thing that works than a big thing that's promised.
 | Provenance / verifiability | **Working** |
 | PII scrubbing (coded fields only) | **Working** |
 | Reproducibility ("same in, same out") | **Working — earned by repetition** |
-| Federated method (one recipe, many agencies) | **Working proofs — 6 systems, 5 countries published** |
+| Federated method (one recipe, many agencies) | **Working proofs — 5 national systems, 5 countries, + Pfizer FOIA, published** |
 | Bridging unrelated data sources | **Theoretical** |
 | HIPAA compliance | **Aspirational — would require formal certification; not claimed** |
 
