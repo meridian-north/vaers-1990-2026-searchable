@@ -50,7 +50,7 @@ SAMPLE_SEARCHES_EXPLAINED.md <- worked searches: sample vs full, fair limits
 METHOD_AND_LIMITS.md         <- what it can and can't tell you (read this)
 SOURCE_AND_VERIFICATION.md   <- where the data comes from + how to verify it
 FAQ.md                       <- common questions
-LICENSE                      <- MIT (code) + CC0 / public-domain (data)
+LICENSE                      <- Apache-2.0 (code); data is CC0 — see LICENSING.md
 CITATION.cff                 <- how to cite this dataset
 MANIFEST_SHA256.txt          <- SHA256 for every file (incl. the Proton full file)
 make_reader_sample_csv.py    <- make your own sample (by year/vaccine/symptom/id list)
@@ -71,6 +71,16 @@ data/
 *(The five non-VAERS sources above are distributed on the Proton mirror, not in
 this GitHub repo, to keep the repo lightweight.)*
 
+## Methods — how we read this data
+
+The [`methods/`](methods/) section is the discipline behind the numbers: a
+statement of what these tools claim and don't ([What Audits Don't Do](methods/WHAT_AUDITS_DONT_DO.md)),
+why a denominator changes everything ([The Denominator Lesson](methods/THE_DENOMINATOR_LESSON.md)),
+and a worked, reproducible vaccine-vs-placebo comparator built from the Pfizer
+C4591001 trial data ([the PHMPT kit](methods/react19_phmpt_comparator_kit/)) — the
+one place a real denominator exists, set deliberately against this repo's
+denominator-free VAERS reports.
+
 ## The fastest way to test it
 
 ```
@@ -81,5 +91,7 @@ SELECT gn_report_date[1:4] AS year, COUNT(*) FROM v GROUP BY 1 ORDER BY 1;
 
 Or paste the CSV into any AI assistant and ask it the questions in `QUERIES.md`.
 
-Assembled by GarrisonNode. Hard to assemble, easy to verify — the method travels
-with the data.
+---
+
+*Assembled by GarrisonNode. Hard to assemble, easy to verify — the method travels
+with the data.*

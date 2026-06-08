@@ -1,0 +1,387 @@
+{
+  "schema": "garrison/comparator_stats/v1",
+  "trial": "C4591001",
+  "arm_field": "actarm",
+  "comparisons": 22,
+  "alpha": 0.05,
+  "method": "RR log-CI (Haldane), Fisher exact 2-sided, BH-FDR + Bonferroni",
+  "survivors_after_fdr": [],
+  "cells": [
+    {
+      "label": "OVERALL",
+      "vaccine_serious": 324,
+      "vaccine_n": 23170,
+      "placebo_serious": 344,
+      "placebo_n": 23198,
+      "rr": 0.943,
+      "ci95": [
+        0.811,
+        1.096
+      ],
+      "fisher_p": 0.4591,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8555,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "SOC:Infections and infestations",
+      "vaccine_serious": 61,
+      "vaccine_n": 23170,
+      "placebo_serious": 68,
+      "placebo_n": 23198,
+      "rr": 0.898,
+      "ci95": [
+        0.636,
+        1.268
+      ],
+      "fisher_p": 0.597,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8555,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "SOC:Cardiac disorders",
+      "vaccine_serious": 49,
+      "vaccine_n": 23170,
+      "placebo_serious": 47,
+      "placebo_n": 23198,
+      "rr": 1.044,
+      "ci95": [
+        0.7,
+        1.557
+      ],
+      "fisher_p": 0.839,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8555,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "SOC:Neoplasms benign, malignant and unspecified (incl cysts and polyps)",
+      "vaccine_serious": 44,
+      "vaccine_n": 23170,
+      "placebo_serious": 41,
+      "placebo_n": 23198,
+      "rr": 1.074,
+      "ci95": [
+        0.702,
+        1.644
+      ],
+      "fisher_p": 0.7462,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8555,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "SOC:Injury, poisoning and procedural complications",
+      "vaccine_serious": 28,
+      "vaccine_n": 23170,
+      "placebo_serious": 34,
+      "placebo_n": 23198,
+      "rr": 0.825,
+      "ci95": [
+        0.5,
+        1.359
+      ],
+      "fisher_p": 0.5255,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8555,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "SOC:Nervous system disorders",
+      "vaccine_serious": 29,
+      "vaccine_n": 23170,
+      "placebo_serious": 32,
+      "placebo_n": 23198,
+      "rr": 0.907,
+      "ci95": [
+        0.549,
+        1.499
+      ],
+      "fisher_p": 0.798,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8555,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "SOC:Gastrointestinal disorders",
+      "vaccine_serious": 27,
+      "vaccine_n": 23170,
+      "placebo_serious": 30,
+      "placebo_n": 23198,
+      "rr": 0.901,
+      "ci95": [
+        0.536,
+        1.515
+      ],
+      "fisher_p": 0.7912,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8555,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "SOC:Respiratory, thoracic and mediastinal disorders",
+      "vaccine_serious": 19,
+      "vaccine_n": 23170,
+      "placebo_serious": 25,
+      "placebo_n": 23198,
+      "rr": 0.761,
+      "ci95": [
+        0.419,
+        1.381
+      ],
+      "fisher_p": 0.4512,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8555,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "SOC:Vascular disorders",
+      "vaccine_serious": 15,
+      "vaccine_n": 23170,
+      "placebo_serious": 18,
+      "placebo_n": 23198,
+      "rr": 0.834,
+      "ci95": [
+        0.421,
+        1.655
+      ],
+      "fisher_p": 0.7282,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8555,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "SOC:Musculoskeletal and connective tissue disorders",
+      "vaccine_serious": 14,
+      "vaccine_n": 23170,
+      "placebo_serious": 16,
+      "placebo_n": 23198,
+      "rr": 0.876,
+      "ci95": [
+        0.428,
+        1.794
+      ],
+      "fisher_p": 0.8555,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8555,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "SOC:Hepatobiliary disorders",
+      "vaccine_serious": 18,
+      "vaccine_n": 23170,
+      "placebo_serious": 8,
+      "placebo_n": 23198,
+      "rr": 2.253,
+      "ci95": [
+        0.98,
+        5.18
+      ],
+      "fisher_p": 0.052,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8024,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "SOC:Psychiatric disorders",
+      "vaccine_serious": 10,
+      "vaccine_n": 23170,
+      "placebo_serious": 14,
+      "placebo_n": 23198,
+      "rr": 0.715,
+      "ci95": [
+        0.318,
+        1.61
+      ],
+      "fisher_p": 0.5412,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8555,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "SOC:Renal and urinary disorders",
+      "vaccine_serious": 13,
+      "vaccine_n": 23170,
+      "placebo_serious": 10,
+      "placebo_n": 23198,
+      "rr": 1.302,
+      "ci95": [
+        0.571,
+        2.968
+      ],
+      "fisher_p": 0.5409,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8555,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "SOC:General disorders and administration site conditions",
+      "vaccine_serious": 11,
+      "vaccine_n": 23170,
+      "placebo_serious": 7,
+      "placebo_n": 23198,
+      "rr": 1.573,
+      "ci95": [
+        0.61,
+        4.058
+      ],
+      "fisher_p": 0.3589,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8555,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "SOC:Metabolism and nutrition disorders",
+      "vaccine_serious": 4,
+      "vaccine_n": 23170,
+      "placebo_serious": 12,
+      "placebo_n": 23198,
+      "rr": 0.334,
+      "ci95": [
+        0.108,
+        1.035
+      ],
+      "fisher_p": 0.0768,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8024,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "SOC:Pregnancy, puerperium and perinatal conditions",
+      "vaccine_serious": 3,
+      "vaccine_n": 23170,
+      "placebo_serious": 9,
+      "placebo_n": 23198,
+      "rr": 0.334,
+      "ci95": [
+        0.09,
+        1.233
+      ],
+      "fisher_p": 0.1459,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8024,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "AGE:0-17",
+      "vaccine_serious": 9,
+      "vaccine_n": 1509,
+      "placebo_serious": 5,
+      "placebo_n": 1505,
+      "rr": 1.795,
+      "ci95": [
+        0.603,
+        5.344
+      ],
+      "fisher_p": 0.4229,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8555,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "AGE:18-49",
+      "vaccine_serious": 92,
+      "vaccine_n": 9971,
+      "placebo_serious": 106,
+      "placebo_n": 10106,
+      "rr": 0.88,
+      "ci95": [
+        0.666,
+        1.161
+      ],
+      "fisher_p": 0.3916,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8555,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "AGE:50-64",
+      "vaccine_serious": 100,
+      "vaccine_n": 7135,
+      "placebo_serious": 106,
+      "placebo_n": 7024,
+      "rr": 0.929,
+      "ci95": [
+        0.708,
+        1.218
+      ],
+      "fisher_p": 0.6234,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8555,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "AGE:65+",
+      "vaccine_serious": 123,
+      "vaccine_n": 4555,
+      "placebo_serious": 127,
+      "placebo_n": 4563,
+      "rr": 0.97,
+      "ci95": [
+        0.76,
+        1.239
+      ],
+      "fisher_p": 0.8475,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8555,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "SEX:M",
+      "vaccine_serious": 182,
+      "vaccine_n": 11894,
+      "placebo_serious": 172,
+      "placebo_n": 11704,
+      "rr": 1.041,
+      "ci95": [
+        0.847,
+        1.281
+      ],
+      "fisher_p": 0.7081,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8555,
+      "bonferroni_p": 1.0,
+      "survives": false
+    },
+    {
+      "label": "SEX:F",
+      "vaccine_serious": 142,
+      "vaccine_n": 11276,
+      "placebo_serious": 172,
+      "placebo_n": 11494,
+      "rr": 0.842,
+      "ci95": [
+        0.675,
+        1.049
+      ],
+      "fisher_p": 0.1394,
+      "ci_excludes_1": false,
+      "fdr_q": 0.8024,
+      "bonferroni_p": 1.0,
+      "survives": false
+    }
+  ],
+  "interpretation": "No comparison survives multiplicity adjustment with a CI excluding 1.0 \u2014 properly-bounded leads, not signals.",
+  "stance": "question_no_conclusion"
+}

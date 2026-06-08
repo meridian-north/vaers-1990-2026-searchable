@@ -13,6 +13,8 @@
 | `SOURCE_AND_VERIFICATION.md` | Where the data comes from (CDC) and how to verify mine against it |
 | `FAQ.md` | Common questions, including "what if CDC changes the source file?" |
 | `MANIFEST_SHA256.txt` | Checksums for every file here |
+| `methods/` | The method behind the data — statement of limits, the denominator lesson, and the PHMPT vaccine-vs-placebo comparator kit |
+| `LICENSING.md` | How the licenses fit together (data CC0, code, methods text/code) |
 
 ## Data
 | File | What it is |

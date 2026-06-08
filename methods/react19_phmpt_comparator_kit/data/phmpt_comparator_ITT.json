@@ -1,0 +1,275 @@
+{
+  "schema": "garrison/phmpt_comparator/v1",
+  "trial": "C4591001",
+  "arm_field": "arm",
+  "arms": {
+    "placebo": {
+      "subjects_randomized": 23254,
+      "subjects_with_any_ae": 7625,
+      "subjects_with_serious_ae": 344,
+      "ae_records": 37148,
+      "serious_rate_per_subject": 0.01479
+    },
+    "vaccine": {
+      "subjects_randomized": 23226,
+      "subjects_with_any_ae": 7383,
+      "subjects_with_serious_ae": 324,
+      "ae_records": 37146,
+      "serious_rate_per_subject": 0.01395
+    },
+    "candidate_bnt162b1": {
+      "subjects_randomized": 84,
+      "subjects_with_any_ae": 44,
+      "subjects_with_serious_ae": 0,
+      "ae_records": 252,
+      "serious_rate_per_subject": 0.0
+    },
+    "vaccine_ph1": {
+      "subjects_randomized": 72,
+      "subjects_with_any_ae": 22,
+      "subjects_with_serious_ae": 2,
+      "ae_records": 64,
+      "serious_rate_per_subject": 0.02778
+    }
+  },
+  "vaccine_vs_placebo_serious_rate_ratio": 0.943,
+  "by_soc": [
+    {
+      "soc": "Infections and infestations",
+      "vaccine_serious_subj": 61,
+      "placebo_serious_subj": 68,
+      "vaccine_rate": 0.002626,
+      "placebo_rate": 0.002924,
+      "rate_ratio": 0.898
+    },
+    {
+      "soc": "Cardiac disorders",
+      "vaccine_serious_subj": 49,
+      "placebo_serious_subj": 47,
+      "vaccine_rate": 0.00211,
+      "placebo_rate": 0.002021,
+      "rate_ratio": 1.044
+    },
+    {
+      "soc": "Neoplasms benign, malignant and unspecified (incl cysts and polyps)",
+      "vaccine_serious_subj": 44,
+      "placebo_serious_subj": 41,
+      "vaccine_rate": 0.001894,
+      "placebo_rate": 0.001763,
+      "rate_ratio": 1.074
+    },
+    {
+      "soc": "Injury, poisoning and procedural complications",
+      "vaccine_serious_subj": 28,
+      "placebo_serious_subj": 34,
+      "vaccine_rate": 0.001206,
+      "placebo_rate": 0.001462,
+      "rate_ratio": 0.825
+    },
+    {
+      "soc": "Nervous system disorders",
+      "vaccine_serious_subj": 29,
+      "placebo_serious_subj": 32,
+      "vaccine_rate": 0.001249,
+      "placebo_rate": 0.001376,
+      "rate_ratio": 0.907
+    },
+    {
+      "soc": "Gastrointestinal disorders",
+      "vaccine_serious_subj": 27,
+      "placebo_serious_subj": 30,
+      "vaccine_rate": 0.001162,
+      "placebo_rate": 0.00129,
+      "rate_ratio": 0.901
+    },
+    {
+      "soc": "Respiratory, thoracic and mediastinal disorders",
+      "vaccine_serious_subj": 19,
+      "placebo_serious_subj": 25,
+      "vaccine_rate": 0.000818,
+      "placebo_rate": 0.001075,
+      "rate_ratio": 0.761
+    },
+    {
+      "soc": "Vascular disorders",
+      "vaccine_serious_subj": 15,
+      "placebo_serious_subj": 18,
+      "vaccine_rate": 0.000646,
+      "placebo_rate": 0.000774,
+      "rate_ratio": 0.834
+    },
+    {
+      "soc": "Musculoskeletal and connective tissue disorders",
+      "vaccine_serious_subj": 14,
+      "placebo_serious_subj": 16,
+      "vaccine_rate": 0.000603,
+      "placebo_rate": 0.000688,
+      "rate_ratio": 0.876
+    },
+    {
+      "soc": "Hepatobiliary disorders",
+      "vaccine_serious_subj": 18,
+      "placebo_serious_subj": 8,
+      "vaccine_rate": 0.000775,
+      "placebo_rate": 0.000344,
+      "rate_ratio": 2.253
+    },
+    {
+      "soc": "Psychiatric disorders",
+      "vaccine_serious_subj": 10,
+      "placebo_serious_subj": 14,
+      "vaccine_rate": 0.000431,
+      "placebo_rate": 0.000602,
+      "rate_ratio": 0.715
+    },
+    {
+      "soc": "Renal and urinary disorders",
+      "vaccine_serious_subj": 13,
+      "placebo_serious_subj": 10,
+      "vaccine_rate": 0.00056,
+      "placebo_rate": 0.00043,
+      "rate_ratio": 1.302
+    },
+    {
+      "soc": "General disorders and administration site conditions",
+      "vaccine_serious_subj": 11,
+      "placebo_serious_subj": 7,
+      "vaccine_rate": 0.000474,
+      "placebo_rate": 0.000301,
+      "rate_ratio": 1.573
+    },
+    {
+      "soc": "Metabolism and nutrition disorders",
+      "vaccine_serious_subj": 4,
+      "placebo_serious_subj": 12,
+      "vaccine_rate": 0.000172,
+      "placebo_rate": 0.000516,
+      "rate_ratio": 0.334
+    },
+    {
+      "soc": "Pregnancy, puerperium and perinatal conditions",
+      "vaccine_serious_subj": 3,
+      "placebo_serious_subj": 9,
+      "vaccine_rate": 0.000129,
+      "placebo_rate": 0.000387,
+      "rate_ratio": 0.334
+    }
+  ],
+  "by_age": {
+    "0-17": {
+      "vaccine": {
+        "n": 1512,
+        "serious_subj": 9,
+        "rate": 0.00595
+      },
+      "placebo": {
+        "n": 1507,
+        "serious_subj": 5,
+        "rate": 0.00332
+      },
+      "rate_ratio": 1.792
+    },
+    "18-49": {
+      "vaccine": {
+        "n": 9996,
+        "serious_subj": 92,
+        "rate": 0.0092
+      },
+      "placebo": {
+        "n": 10134,
+        "serious_subj": 106,
+        "rate": 0.01046
+      },
+      "rate_ratio": 0.88
+    },
+    "50-64": {
+      "vaccine": {
+        "n": 7146,
+        "serious_subj": 100,
+        "rate": 0.01399
+      },
+      "placebo": {
+        "n": 7041,
+        "serious_subj": 106,
+        "rate": 0.01505
+      },
+      "rate_ratio": 0.93
+    },
+    "65+": {
+      "vaccine": {
+        "n": 4572,
+        "serious_subj": 123,
+        "rate": 0.0269
+      },
+      "placebo": {
+        "n": 4572,
+        "serious_subj": 127,
+        "rate": 0.02778
+      },
+      "rate_ratio": 0.968
+    },
+    "unknown": {
+      "vaccine": {
+        "n": 0,
+        "serious_subj": 0,
+        "rate": null
+      },
+      "placebo": {
+        "n": 0,
+        "serious_subj": 0,
+        "rate": null
+      },
+      "rate_ratio": null
+    }
+  },
+  "by_sex": {
+    "M": {
+      "vaccine": {
+        "n": 11927,
+        "serious_subj": 182,
+        "rate": 0.01526
+      },
+      "placebo": {
+        "n": 11732,
+        "serious_subj": 172,
+        "rate": 0.01466
+      },
+      "rate_ratio": 1.041
+    },
+    "F": {
+      "vaccine": {
+        "n": 11299,
+        "serious_subj": 142,
+        "rate": 0.01257
+      },
+      "placebo": {
+        "n": 11522,
+        "serious_subj": 172,
+        "rate": 0.01493
+      },
+      "rate_ratio": 0.842
+    },
+    "U": {
+      "vaccine": {
+        "n": 0,
+        "serious_subj": 0,
+        "rate": null
+      },
+      "placebo": {
+        "n": 0,
+        "serious_subj": 0,
+        "rate": null
+      },
+      "rate_ratio": null
+    }
+  },
+  "ae_unmatched_to_arm": 0,
+  "stance": "question_no_conclusion",
+  "caveat": "RANDOMIZED trial \u2192 real denominator (rate, not a floor), but: trial population not real-world; ascertainment differs from spontaneous systems (do NOT cross-bridge these rates with VAERS/CVAR as equivalent); arm_field=actarm is as-treated. Lead, not a verdict; the clinician/epidemiologist owns the why.",
+  "what_would_sharpen": [
+    "confirm USUBJID join (unmatched rate above)",
+    "ITT (arm) vs as-treated (actarm) sensitivity",
+    "stratify by age/sex (ADSL carries them)",
+    "serious BY MedDRA SOC, not just the serious flag"
+  ]
+}
