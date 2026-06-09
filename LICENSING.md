@@ -1,7 +1,7 @@
 # Licensing — how the pieces fit
 
 This repository mixes three kinds of material, each under the license that fits it.
-Everything is © 2026 meridian-north except the government-derived data, which is
+Everything is © 2026 MerkleTrust LLC except the government-derived data, which is
 dedicated to the public domain.
 
 | Material | Where | License |

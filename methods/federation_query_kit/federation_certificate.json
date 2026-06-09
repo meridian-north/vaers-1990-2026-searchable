@@ -1,0 +1,415 @@
+{
+  "facet": "gn_symptoms_primary",
+  "split": false,
+  "systems": [
+    "VAERS",
+    "CVAR",
+    "JADER",
+    "PHMPT",
+    "TGA",
+    "MHRA",
+    "VSAFE"
+  ],
+  "rows_scanned": {
+    "VAERS": 1989028,
+    "CVAR": 29501,
+    "JADER": 169027,
+    "PHMPT": 231632,
+    "TGA": 250903,
+    "MHRA": 447845,
+    "VSAFE": 1606427
+  },
+  "max_rows_cap": null,
+  "winner": {
+    "query": "TINNITUS",
+    "coverage": 6,
+    "floor": 80,
+    "total": 9115,
+    "per_system": {
+      "VAERS": 5652,
+      "CVAR": 80,
+      "JADER": 147,
+      "PHMPT": 138,
+      "TGA": 590,
+      "MHRA": 2508,
+      "VSAFE": 0
+    }
+  },
+  "top": [
+    {
+      "query": "TINNITUS",
+      "coverage": 6,
+      "floor": 80,
+      "total": 9115,
+      "per_system": {
+        "VAERS": 5652,
+        "CVAR": 80,
+        "JADER": 147,
+        "PHMPT": 138,
+        "TGA": 590,
+        "MHRA": 2508,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "THROMBOCYTOPENIA",
+      "coverage": 6,
+      "floor": 18,
+      "total": 1664,
+      "per_system": {
+        "VAERS": 165,
+        "CVAR": 30,
+        "JADER": 1194,
+        "PHMPT": 18,
+        "TGA": 146,
+        "MHRA": 111,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "MYOCARDITIS",
+      "coverage": 6,
+      "floor": 6,
+      "total": 3048,
+      "per_system": {
+        "VAERS": 507,
+        "CVAR": 395,
+        "JADER": 1132,
+        "PHMPT": 6,
+        "TGA": 858,
+        "MHRA": 150,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "PERICARDITIS",
+      "coverage": 6,
+      "floor": 6,
+      "total": 2759,
+      "per_system": {
+        "VAERS": 232,
+        "CVAR": 523,
+        "JADER": 457,
+        "PHMPT": 6,
+        "TGA": 1404,
+        "MHRA": 137,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "PYREXIA",
+      "coverage": 5,
+      "floor": 769,
+      "total": 40113,
+      "per_system": {
+        "VAERS": 15923,
+        "CVAR": 2145,
+        "JADER": 0,
+        "PHMPT": 16298,
+        "TGA": 769,
+        "MHRA": 4978,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "RASH",
+      "coverage": 5,
+      "floor": 441,
+      "total": 34796,
+      "per_system": {
+        "VAERS": 24436,
+        "CVAR": 441,
+        "JADER": 0,
+        "PHMPT": 948,
+        "TGA": 2643,
+        "MHRA": 6328,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "DECREASED APPETITE",
+      "coverage": 5,
+      "floor": 414,
+      "total": 9268,
+      "per_system": {
+        "VAERS": 5247,
+        "CVAR": 465,
+        "JADER": 0,
+        "PHMPT": 414,
+        "TGA": 796,
+        "MHRA": 2346,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "HEADACHE",
+      "coverage": 5,
+      "floor": 316,
+      "total": 90866,
+      "per_system": {
+        "VAERS": 35308,
+        "CVAR": 316,
+        "JADER": 0,
+        "PHMPT": 21467,
+        "TGA": 6347,
+        "MHRA": 27428,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "PAIN",
+      "coverage": 5,
+      "floor": 305,
+      "total": 21571,
+      "per_system": {
+        "VAERS": 10213,
+        "CVAR": 523,
+        "JADER": 0,
+        "PHMPT": 6978,
+        "TGA": 305,
+        "MHRA": 3552,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "FATIGUE",
+      "coverage": 5,
+      "floor": 286,
+      "total": 91241,
+      "per_system": {
+        "VAERS": 37413,
+        "CVAR": 286,
+        "JADER": 0,
+        "PHMPT": 24661,
+        "TGA": 4209,
+        "MHRA": 24672,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "PAIN IN EXTREMITY",
+      "coverage": 5,
+      "floor": 273,
+      "total": 25392,
+      "per_system": {
+        "VAERS": 15378,
+        "CVAR": 273,
+        "JADER": 0,
+        "PHMPT": 2626,
+        "TGA": 868,
+        "MHRA": 6247,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "HERPES ZOSTER",
+      "coverage": 5,
+      "floor": 270,
+      "total": 28263,
+      "per_system": {
+        "VAERS": 23259,
+        "CVAR": 522,
+        "JADER": 0,
+        "PHMPT": 270,
+        "TGA": 1950,
+        "MHRA": 2262,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "URTICARIA",
+      "coverage": 5,
+      "floor": 237,
+      "total": 16889,
+      "per_system": {
+        "VAERS": 12361,
+        "CVAR": 237,
+        "JADER": 0,
+        "PHMPT": 330,
+        "TGA": 2275,
+        "MHRA": 1686,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "CHEST PAIN",
+      "coverage": 5,
+      "floor": 236,
+      "total": 39354,
+      "per_system": {
+        "VAERS": 13337,
+        "CVAR": 267,
+        "JADER": 0,
+        "PHMPT": 236,
+        "TGA": 16481,
+        "MHRA": 9033,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "VOMITING",
+      "coverage": 5,
+      "floor": 236,
+      "total": 4530,
+      "per_system": {
+        "VAERS": 1750,
+        "CVAR": 236,
+        "JADER": 0,
+        "PHMPT": 1002,
+        "TGA": 377,
+        "MHRA": 1165,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "ARTHRALGIA",
+      "coverage": 5,
+      "floor": 233,
+      "total": 121687,
+      "per_system": {
+        "VAERS": 72908,
+        "CVAR": 233,
+        "JADER": 0,
+        "PHMPT": 4089,
+        "TGA": 11607,
+        "MHRA": 32850,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "DIARRHOEA",
+      "coverage": 5,
+      "floor": 233,
+      "total": 30678,
+      "per_system": {
+        "VAERS": 16223,
+        "CVAR": 233,
+        "JADER": 0,
+        "PHMPT": 4031,
+        "TGA": 2412,
+        "MHRA": 7779,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "DIZZINESS",
+      "coverage": 5,
+      "floor": 223,
+      "total": 80629,
+      "per_system": {
+        "VAERS": 54138,
+        "CVAR": 223,
+        "JADER": 0,
+        "PHMPT": 1328,
+        "TGA": 8050,
+        "MHRA": 16890,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "COUGH",
+      "coverage": 5,
+      "floor": 205,
+      "total": 21149,
+      "per_system": {
+        "VAERS": 15262,
+        "CVAR": 205,
+        "JADER": 0,
+        "PHMPT": 264,
+        "TGA": 1961,
+        "MHRA": 3457,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "CHILLS",
+      "coverage": 5,
+      "floor": 196,
+      "total": 144230,
+      "per_system": {
+        "VAERS": 85155,
+        "CVAR": 196,
+        "JADER": 0,
+        "PHMPT": 16387,
+        "TGA": 4097,
+        "MHRA": 38395,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "INJECTION SITE PAIN",
+      "coverage": 5,
+      "floor": 194,
+      "total": 73068,
+      "per_system": {
+        "VAERS": 22307,
+        "CVAR": 194,
+        "JADER": 0,
+        "PHMPT": 48280,
+        "TGA": 1166,
+        "MHRA": 1121,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "ERYTHEMA",
+      "coverage": 5,
+      "floor": 191,
+      "total": 63710,
+      "per_system": {
+        "VAERS": 56926,
+        "CVAR": 772,
+        "JADER": 0,
+        "PHMPT": 191,
+        "TGA": 1198,
+        "MHRA": 4623,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "MALAISE",
+      "coverage": 5,
+      "floor": 176,
+      "total": 9079,
+      "per_system": {
+        "VAERS": 5271,
+        "CVAR": 176,
+        "JADER": 0,
+        "PHMPT": 1488,
+        "TGA": 622,
+        "MHRA": 1522,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "NAUSEA",
+      "coverage": 5,
+      "floor": 167,
+      "total": 13213,
+      "per_system": {
+        "VAERS": 5532,
+        "CVAR": 167,
+        "JADER": 0,
+        "PHMPT": 3430,
+        "TGA": 1240,
+        "MHRA": 2844,
+        "VSAFE": 0
+      }
+    },
+    {
+      "query": "PRURITUS",
+      "coverage": 5,
+      "floor": 165,
+      "total": 23778,
+      "per_system": {
+        "VAERS": 16828,
+        "CVAR": 165,
+        "JADER": 0,
+        "PHMPT": 320,
+        "TGA": 1448,
+        "MHRA": 5017,
+        "VSAFE": 0
+      }
+    }
+  ]
+}

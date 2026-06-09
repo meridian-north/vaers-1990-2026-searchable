@@ -39,10 +39,12 @@ That's simply the coded fields laid out flat so any spreadsheet or tool can read
 them — nothing proprietary, nothing you need permission for.
 
 **Is it only VAERS?**
-No. The same treatment is applied to five national reporting systems across
-five countries — US VAERS, Australia (TGA DAEN), the UK (MHRA Yellow Card),
-Canada (CVAR), Japan (JADER) — plus the Pfizer FOIA release (a different kind
-of source: trial documents, not a national reporting system).
+No. The same treatment is applied across **seven systems in five countries** —
+five national reporting systems (US VAERS, Australia TGA DAEN, the UK MHRA
+Yellow Card, Canada CVAR, Japan JADER), plus the U.S. V-Safe active-monitoring
+system and the Pfizer FOIA release (a different kind of source: trial documents,
+not a national reporting system). All seven share one 69-column schema, so a
+single query reaches every one — see the federation kit under `methods/`.
 
 ---
 

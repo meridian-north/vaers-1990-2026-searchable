@@ -39,7 +39,7 @@ This methods section is dual-licensed by file type:
 - **Code** (the kit's `.py` scorers) — Apache License 2.0.
   See [`LICENSE-Apache-2.0.txt`](LICENSE-Apache-2.0.txt).
 
-Copyright 2026 meridian-north. See the repository-level `LICENSING.md` for how this
+Copyright 2026 MerkleTrust LLC. See the repository-level `LICENSING.md` for how this
 fits with the dataset's public-domain (CC0) dedication and the repo's code license.
 
 ---

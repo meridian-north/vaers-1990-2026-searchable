@@ -5,7 +5,7 @@ denominator lesson, the README, and any accompanying explanatory documentation â
 is licensed under the **Creative Commons Attribution 4.0 International License
 (CC BY 4.0)**.
 
-Copyright 2026 meridian-north.
+Copyright 2026 MerkleTrust LLC.
 
 You are free to:
 

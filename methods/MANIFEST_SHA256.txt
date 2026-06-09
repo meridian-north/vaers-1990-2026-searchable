@@ -1,11 +1,16 @@
 # SHA256 manifest — methods/ section
 # Verify: shasum -a 256 -c MANIFEST_SHA256.txt (run from methods/)
 
-53f9dea1903de37fa148dbcb6a3c03195b1ce0a7903f9bab2868cd01c94502ef  ./LICENSE-Apache-2.0.txt
-b716bd628986924eb2b8d1aeedb9309902269e9edfd26faa1b5068f39ef00126  ./LICENSE-text-CC-BY-4.0.md
-0e7a4f6eb30e590d56ef89f18506d92aea57aa5efbede625a5b5cebe30e7f85a  ./README.md
+fd353145eae5eb41ea5dfdf2d0b20dfdb0229812f04c35fc916d265d647bac47  ./LICENSE-Apache-2.0.txt
+ca46acdc0f7ead56de91fe1889132eabd14b5758cf84494a29878fe783dbbe8e  ./LICENSE-text-CC-BY-4.0.md
+7060784039cc678a87a7b61d77b5583ba8664fb701f5d923daed2fcab0c9d8e8  ./README.md
 11a05074e733251c3db2169dce1e268d9677f727283d3de356a92f0e3916426e  ./THE_DENOMINATOR_LESSON.md
 f88fe8bbba1be490a4949c5423cd22c0ce00f78b62b3cad81b3a13ed62a05e81  ./WHAT_AUDITS_DONT_DO.md
+0c8cabb0387dbe9a9ca2df1d50e2215d2e1bb684011bf8f750c24b7b33926192  ./federation_query_kit/FEDERATION_CERTIFICATE.md
+79d93e1ad8a7b75b4e4e544095a67a048414e853606a2a4edc3481cc405ae257  ./federation_query_kit/README.md
+4d5860e67582212ae2fe9f1fa570b8a4fa5277520e241886180e7f386fc5db72  ./federation_query_kit/federation_certificate.json
+48bcec493aecc85d939a020fbf29087bd395881c26d35d938e8e6bb411f39b51  ./federation_query_kit/federation_query_finder.py
+f081e9a0680c23fb704268370abcf808a92a6cd8afff9a6a8e1a8cd03acdf94d  ./federation_query_kit/federation_top.tsv
 83a23115d3110b8189bcb912ca854a54d127d84604ebb3ae1ab035cfe1051c6b  ./react19_phmpt_comparator_kit/METHOD_AND_LIMITS.md
 e9e5f6a386a7c6c797fea28283cc0122b5bd68fe346afe812224f9d612aca80a  ./react19_phmpt_comparator_kit/QUESTIONS.md
 982b651458087262a22cbb53d8d4146343d52a84c0041438d9c0b43266e91f59  ./react19_phmpt_comparator_kit/README.md

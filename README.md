@@ -9,12 +9,14 @@ reports behind any answer.
 free-text boxes in CDC's originals (where phone numbers or addresses sometimes
 appear) are not included. Nothing here points back to a person.
 
-> **Part of a five-system, five-country open release (plus a Pfizer FOIA set).**
+> **Part of a seven-system, five-country open release.**
 > This repository is the **VAERS** release — the flagship, with the full query
 > kit below. The same PII-free, verifiable treatment is applied to four more
-> national reporting systems (Australia, the UK, Canada, Japan), plus the Pfizer
-> FOIA release. Those live on the public Proton mirror — see **"The wider
-> dataset"** below. One recipe, many agencies.
+> national reporting systems (Australia, the UK, Canada, Japan), plus the U.S.
+> **V-Safe** active-monitoring system and the **Pfizer C4591001 (PHMPT FOIA)**
+> trial set — **seven systems in all**, all projected into one shared 69-column
+> schema so a single query reaches every one. They live on the public Proton
+> mirror — see **"The wider dataset"** below. One recipe, many agencies.
 
 ## Start here
 
@@ -23,18 +25,30 @@ appear) are not included. Nothing here points back to a person.
 3. Read `METHOD_AND_LIMITS.md` (what it can/can't tell you) and `SAMPLE_SEARCHES_EXPLAINED.md` (worked searches on the sample vs the full file, with the fair limits of each) before quoting numbers — these are reports, not proof of cause; counts are a floor; there's no built-in denominator.
 4. Want everything? The full ~2-million-row file `vaers_1990_2026_69col.csv.gz` (~95 MB zipped, ~624 MB open) lives in `data/` on the Proton mirror: https://drive.proton.me/urls/YB9AKDNCZC#8ZGtNiWl21ds — it's kept out of the GitHub repo to stay lightweight. Verify it against the SHA256 in `MANIFEST_SHA256.txt` (which is version-controlled here).
 
-## The wider dataset — all six sources
+## The wider dataset — all seven systems
 
 This GitHub repo holds the **VAERS** files. The complete multi-agency dataset —
-five national reporting systems across five countries, plus the Pfizer FOIA
-release — is on the public Proton mirror, every file SHA-256 verifiable. Each
+five national reporting systems across five countries, plus the U.S. V-Safe
+active-monitoring system and the Pfizer FOIA trial set, **seven systems in
+all** — is on the public Proton mirror, every file SHA-256 verifiable. Each
 follows the same rule: **coded fields only, no free-text, no PII.**
+
+**Reproduce all seven at once** — the federation bundle (the seven gzipped
+69-column corpora + the query tool + an R pack + a SHA-256 manifest, ~300 MB):
+https://drive.proton.me/urls/CM5GTSH1GR#wrLKOgZL9nNT
+
+Or pull a single system:
 
 - **VAERS** (United States): https://drive.proton.me/urls/YB9AKDNCZC#8ZGtNiWl21ds
 - **TGA DAEN** (Australia): https://drive.proton.me/urls/1QHWX9T3Z8#q7z9ZLcwNW6B
 - **MHRA Yellow Card** (United Kingdom): https://drive.proton.me/urls/7M6Q2PH4J4#UCIYrZsELiMx
 - **Health Canada CVAR** (Canada): https://drive.proton.me/urls/V0X7RAD63W#vwGmI0aKv2it
 - **JADER** (Japan): https://drive.proton.me/urls/WCSKTCSP4C#EFTnlzHDIPcC
+- **V-Safe** (United States, active monitoring) — ships in the federation bundle
+  above. Note: V-Safe uses a *closed* symptom checklist, so it returns **0** on
+  free-coded terms like "myocarditis" — that's a disclosed blind spot of the
+  instrument, not a zero risk. It's included for the active-monitoring and
+  reactogenicity contrast, never as an absence-of-events claim.
 - **Pfizer (PHMPT FOIA)** — trial documents, not a national reporting system: https://drive.proton.me/urls/N5KV5E8T7R#zr0Z68S5WTGm
 
 Treat every link as public: there's no access gate, by design — the PII scrub is
@@ -68,7 +82,7 @@ data/
   vaers_1990_2026_69col.csv.gz  <- FULL dataset (~95 MB) — on the Proton mirror, not in the GitHub repo
 ```
 
-*(The five non-VAERS sources above are distributed on the Proton mirror, not in
+*(The six non-VAERS systems above are distributed on the Proton mirror, not in
 this GitHub repo, to keep the repo lightweight.)*
 
 ## Methods — how we read this data
