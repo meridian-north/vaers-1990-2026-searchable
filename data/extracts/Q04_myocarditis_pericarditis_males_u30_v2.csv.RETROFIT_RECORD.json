@@ -1,0 +1,21 @@
+{
+  "schema": "garrison/caveat_retrofit_record/v1",
+  "tool": "GN/tools/caveat_retrofit.py",
+  "tool_version": "0.1.0",
+  "retrofit_ts": "2026-06-09T22:27:22Z",
+  "source_file": "vaers-1990-2026-searchable/data/extracts/Q04_myocarditis_pericarditis_males_u30.csv",
+  "source_sha256": "25ac7efbb65332004e6f258ae7b8d89722fed90f8705cf37e5199afe19518b3d",
+  "v2_file": "vaers-1990-2026-searchable/data/extracts/Q04_myocarditis_pericarditis_males_u30_v2.csv",
+  "v2_sha256": "aba3ab6d6e58ca3cfc8bbd8ec76d577d03700fc2e8be7ef9162ad2d7ec5d92e7",
+  "rows_caveated": 992,
+  "rows_with_prior_content_appended": 0,
+  "mode": "strand_gn_empty_a",
+  "schema_change": false,
+  "caveat_text": "caveat:L1_factual_4W1H;passive_surveillance_reports_unverified;a_report_is_not_causation;reporting_rates_are_not_incidence_rates",
+  "doctrine": "Red Lines 10 (caveat travels with the data) + state-changes-are-the-record: v1 remains valid as v1; this record is the attestable supersession link.",
+  "next_steps": [
+    "re-sign v2 manifest (MANIFEST_SHA256) including v2_sha256",
+    "publish v2 beside v1 with SUPERSEDED note on v1",
+    "attest this record at the next ceremony (chain leaf)"
+  ]
+}
