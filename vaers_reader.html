@@ -1,9 +1,9 @@
 <!doctype html>
 <!--
   VAERS Reader — browser front-end for the vaers-1990-2026-searchable corpus.
-  Meridian North. Public. Runs entirely in your browser via DuckDB-WASM: no
-  server, no account, no telemetry. Runs the SAME DuckDB SQL as the published
-  QUERIES.md, so the numbers match the kit byte-for-byte.
+  Meridian North. Public. Runs entirely in your browser in plain JavaScript:
+  no server, no account, no telemetry, no heavy engine to load. It reproduces
+  the QUERIES.md questions (same filters and groupings) directly over the CSV.
 
   These are COUNTS OF REPORTS, not rates. There is no denominator. Anyone can
   file a VAERS report; a report is a temporal association, not proof the vaccine
@@ -38,7 +38,6 @@
     padding:9px 14px;font-size:14px;font-weight:600;cursor:pointer}
   button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
   button.warn{background:var(--bad);color:#fff}
-  button:disabled{opacity:.45;cursor:not-allowed}
   input[type=text],input[type=number],input[type=email],select{background:var(--panel2);color:var(--ink);
     border:1px solid var(--line);border-radius:6px;padding:7px 9px;font-size:14px}
   label{font-size:12px;color:var(--ink-dim);display:block;margin-bottom:3px}
@@ -50,8 +49,7 @@
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
   .chip{display:inline-block;background:var(--panel2);border:1px solid var(--line);color:var(--ink);
     border-radius:20px;padding:5px 12px;font-size:13px;cursor:pointer;margin:3px 4px 0 0}
-  .chip:hover{border-color:var(--accent)}
-  .chip .n{color:var(--ink-dim);font-size:11px;margin-left:5px}
+  .chip:hover{border-color:var(--accent)} .chip .n{color:var(--ink-dim);font-size:11px;margin-left:5px}
   .caveat{background:var(--caveat-bg);border:1px solid var(--caveat-line);border-radius:8px;
     padding:11px 13px;font-size:12.5px;color:#e8d9a8;margin:12px 0}
   .caveat b{color:#f0c674}
@@ -67,10 +65,6 @@
   th{background:var(--panel2);position:sticky;top:0;color:var(--ink-dim);font-weight:700}
   .tablewrap{max-height:520px;overflow:auto;border-radius:8px}
   .status{font-size:13px;color:var(--ink-dim);min-height:18px}
-  .progress{height:6px;background:var(--panel2);border-radius:4px;overflow:hidden;margin-top:8px}
-  .progress>div{height:100%;width:0;background:var(--accent);transition:width .2s}
-  pre.sql{font-family:var(--mono);font-size:12px;background:var(--panel2);border:1px solid var(--line);
-    border-radius:6px;padding:10px;overflow:auto;white-space:pre-wrap;color:#9fd6f0;margin:8px 0 0}
   .muted{color:var(--ink-dim)} .err{color:var(--bad)} .ok-txt{color:var(--ok)}
   details summary{cursor:pointer;color:var(--accent);font-size:13px;margin-top:6px}
   #gate{position:fixed;inset:0;background:rgba(8,11,15,.96);z-index:50;display:flex;
@@ -86,7 +80,6 @@
 </head>
 <body>
 
-<!-- ===================== CONSENT / ACKNOWLEDGEMENT GATE ===================== -->
 <div id="gate">
   <div class="box">
     <h2>Before you read the data — read this</h2>
@@ -109,10 +102,7 @@
     <p class="muted" style="font-size:11.5px;margin:10px 0 0">
       This screen records that you have read these terms; it is not an access control. If this tool is hosted
       behind a sign-in, that gate is enforced by the host site, not by this page.</p>
-    <div class="accbar">
-      <button id="acceptBtn">I have read and understand — show me the data</button>
-      <span class="muted" id="gateStatus"></span>
-    </div>
+    <div class="accbar"><button id="acceptBtn">I have read and understand — show me the data</button></div>
   </div>
 </div>
 
@@ -129,37 +119,31 @@
     cannot report shows <b>"unavailable" — never zero</b> (the PII-scrubbed free-text columns are intentionally blank).
   </div>
 
-  <!-- LOAD -->
   <div class="card">
     <h2>Data</h2>
     <p class="hint">Loads the sample automatically. For real results, load the full
-      <b>vaers_1990_2026_69col.csv</b> (from the Proton mirror) with the file picker or a URL, and verify its
-      SHA-256 against the manifest.</p>
-    <div class="progress" id="prog" style="display:none"><div></div></div>
-    <div class="status" id="loadStatus">Starting the in-browser engine…</div>
+      <b>vaers_1990_2026_69col.csv</b> (from the Proton mirror) with the file picker or a URL, and verify its SHA-256.</p>
+    <div class="status" id="loadStatus">Loading the sample…</div>
     <div class="row" style="margin-top:10px">
       <div class="field"><label>Load a file (CSV)</label><input type="file" id="fileInput" accept=".csv,.tsv,.txt"></div>
       <div class="field" style="flex:1;min-width:260px"><label>…or fetch from a URL</label><input type="text" id="urlInput" placeholder="https://…/vaers_1990_2026_69col.csv"></div>
       <div class="field"><label>&nbsp;</label><button id="fetchBtn" class="ghost">Fetch</button></div>
     </div>
     <div class="row" style="margin-top:8px">
-      <div class="field" style="flex:1;min-width:320px"><label>Expected SHA-256 (from MANIFEST_SHA256.txt, optional)</label><input type="text" id="expectedHash" placeholder="paste to verify"></div>
+      <div class="field" style="flex:1;min-width:320px"><label>Expected SHA-256 (optional)</label><input type="text" id="expectedHash" placeholder="paste to verify"></div>
     </div>
     <div id="hashWrap" class="hidden" style="margin-top:8px">
-      <label>This file's SHA-256 <span id="hashVerdict"></span></label>
-      <div class="hashbox" id="hashOut"></div>
+      <label>This file's SHA-256 <span id="hashVerdict"></span></label><div class="hashbox" id="hashOut"></div>
     </div>
   </div>
 
-  <!-- GOOD QUESTIONS -->
   <div class="card" id="askCard" style="display:none">
     <h2>Good questions — the published query pack</h2>
-    <p class="hint">One click runs the exact DuckDB SQL from <b>QUERIES.md</b>. Each is a question, not a finding.
-      "Show the rows" questions return the actual reports behind the answer.</p>
+    <p class="hint">One click runs the question from <b>QUERIES.md</b>. Each is a question, not a finding.
+      "Rows" questions return the actual reports behind the answer.</p>
     <div class="grid" id="presets"></div>
   </div>
 
-  <!-- BROWSE -->
   <div class="card" id="browseCard" style="display:none">
     <h2>Browse — nothing to guess</h2>
     <p class="hint">Click any value to pull its reports. Counts shown are reports, a floor.</p>
@@ -170,7 +154,6 @@
     <div style="margin-top:10px"><label>Age band</label><div id="f_age"></div></div>
     <div style="margin-top:10px"><label>State / region</label><div id="f_state"></div></div>
     <div style="margin-top:10px"><label>Reporter type</label><div id="f_reporter"></div></div>
-
     <details>
       <summary>Or build your own filter</summary>
       <div class="row" style="margin-top:8px">
@@ -188,14 +171,11 @@
     </details>
   </div>
 
-  <!-- RESULTS -->
   <div class="card" id="resultCard" style="display:none">
     <h2>Result <span id="resultTitle" class="muted" style="text-transform:none;letter-spacing:0"></span></h2>
     <div class="caveat" id="resultAsk"></div>
-    <div class="caveat">Reports, not rates. No denominator. A report is not proof of causation. These are leads
-      for a human to investigate — the clinician/epidemiologist owns the why.</div>
+    <div class="caveat">Reports, not rates. No denominator. A report is not proof of causation. Leads for a human to investigate.</div>
     <div id="resultMeta" class="status"></div>
-    <pre class="sql" id="resultSql"></pre>
     <div class="tablewrap"><table id="resultTable"></table></div>
     <div class="row" style="margin-top:10px">
       <button id="exportCsv">Save results as CSV</button>
@@ -214,15 +194,13 @@
   <a href="FAQ.md">FAQ</a> ·
   <a href="MANIFEST_SHA256.txt">MANIFEST_SHA256.txt</a>.
   <br>
-  Meridian North — open, reproducible, public-interest data. Built only from the structured, coded fields:
-  no free-text, no PII. Counts are a floor; there is no denominator; a report is not proof of cause. This page
-  runs entirely in your browser via DuckDB-WASM and sends nothing anywhere.
+  Meridian North — open, reproducible, public-interest data. Built only from structured, coded fields: no
+  free-text, no PII. Counts are a floor; there is no denominator; a report is not proof of cause. This page
+  runs entirely in your browser and sends nothing anywhere.
   <br><span class="muted" id="snapLine"></span>
 </footer>
 
-<script type="module">
-import * as duckdb from 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.28.0/+esm';
-
+<script>
 const ROW_CAVEAT = 'VAERS reports — counts not rates — no denominator — a report is not proof of causation — hypothesis-generating only';
 const EXPORT_CAVEATS = [
   'Source: Meridian North — vaers-1990-2026-searchable (U.S. VAERS, public, coded fields only, no PII).',
@@ -234,179 +212,205 @@ const EXPORT_CAVEATS = [
   'A field a source cannot report is "unavailable", never zero (PII-scrubbed free-text columns are intentionally blank).',
   'Cite the snapshot date in any onward use. Verify files against MANIFEST_SHA256.txt.'
 ];
-
-// ---- the published query pack (QUERIES.md) — verbatim SQL against view v ----
-const PRESETS = [
- {id:'Q01', t:'Report volume by year', ask:'How many reports were filed each year?',
-  sql:`SELECT gn_report_date[1:4] AS year, COUNT(*) AS reports FROM v GROUP BY 1 ORDER BY 1`},
- {id:'Q03', t:'Mortality by manufacturer', ask:'How many reports, and how many flagged a death, per manufacturer? (a death FLAG is not a vaccine-caused death.)',
-  sql:`SELECT gn_mfr_name, COUNT(*) AS reports,\n       SUM(CASE WHEN gn_outcome_died='1' THEN 1 ELSE 0 END) AS deaths\nFROM v GROUP BY 1 ORDER BY deaths DESC`},
- {id:'Q04', t:'Myocarditis / pericarditis, males under 30', ask:'By year, how many reports mention myo/pericarditis in males under 30? (the marquee pattern — a question, not a verdict.)',
-  sql:`SELECT gn_report_date[1:4] AS year, COUNT(*) AS reports\nFROM v\nWHERE (what_symptoms_full ILIKE '%myocard%' OR what_symptoms_full ILIKE '%pericard%')\n  AND gn_sex='M' AND TRY_CAST(gn_age_years AS DOUBLE) < 30\nGROUP BY 1 ORDER BY 1`},
- {id:'Q02', t:'Serious outcomes, COVID vs flu', ask:'Reports and serious-flagged counts for COVID vs flu vaccines.',
-  sql:`SELECT gn_vaccine_name, COUNT(*) AS reports,\n       SUM(CASE WHEN gn_outcome_serious='1' THEN 1 ELSE 0 END) AS serious\nFROM v WHERE gn_vaccine_name ILIKE '%COVID%' OR gn_vaccine_name ILIKE '%FLU%'\nGROUP BY 1 ORDER BY reports DESC`},
- {id:'Q05', t:'Onset latency', ask:'Distribution of days from vaccination to event onset.',
-  sql:`SELECT TRY_CAST(when_days_to_onset AS INTEGER) AS days_to_onset, COUNT(*) AS reports\nFROM v WHERE when_days_to_onset <> '' GROUP BY 1 ORDER BY 1`},
- {id:'Q06', t:'Lot clustering', ask:'Which lot numbers carry the most reports? (clustering reflects distribution volume too — a question, not a verdict.)',
-  sql:`SELECT gn_lot_number, gn_mfr_name, COUNT(*) AS reports\nFROM v WHERE gn_lot_number <> '' GROUP BY 1,2 ORDER BY reports DESC LIMIT 100`},
- {id:'Q07', t:'Geographic clustering', ask:'Reports by state / region (tracks population and reporting culture).',
-  sql:`SELECT gn_state_region, COUNT(*) AS reports FROM v GROUP BY 1 ORDER BY reports DESC`},
- {id:'Q08', t:'Symptom baseline', ask:'Most frequent primary symptoms across all reports.',
-  sql:`SELECT gn_symptoms_primary, COUNT(*) AS reports\nFROM v WHERE gn_symptoms_primary <> '' GROUP BY 1 ORDER BY reports DESC LIMIT 100`},
- {id:'Q09', t:'Reporter type', ask:'Who filed the reports (clinician, patient, manufacturer…)?',
-  sql:`SELECT who_reporter_class, COUNT(*) AS reports FROM v GROUP BY 1 ORDER BY reports DESC`},
- {id:'Q10', t:'Serious-rate by year', ask:'What share of each year\\'s reports were flagged serious?',
-  sql:`SELECT gn_report_date[1:4] AS year, COUNT(*) AS reports,\n       ROUND(100.0*SUM(CASE WHEN gn_outcome_serious='1' THEN 1 ELSE 0 END)/COUNT(*),2) AS pct_serious\nFROM v GROUP BY 1 ORDER BY pct_serious DESC`},
- {id:'Q11', t:'Dose-number effect', ask:'Reports by dose number in series.',
-  sql:`SELECT gn_dose_number, COUNT(*) AS reports FROM v GROUP BY 1 ORDER BY reports DESC`},
- {id:'Q12', t:'Age × manufacturer', ask:'Reports by manufacturer across age bands.',
-  sql:`SELECT gn_mfr_name,\n  CASE WHEN TRY_CAST(gn_age_years AS DOUBLE) < 18 THEN 'under_18'\n       WHEN TRY_CAST(gn_age_years AS DOUBLE) < 30 THEN '18_29'\n       WHEN TRY_CAST(gn_age_years AS DOUBLE) < 65 THEN '30_64'\n       WHEN TRY_CAST(gn_age_years AS DOUBLE) >= 65 THEN '65_plus' ELSE 'unknown' END AS age_band,\n  COUNT(*) AS reports\nFROM v GROUP BY 1,2 ORDER BY 1,2`},
- {id:'Q13', t:'Time-to-onset shift by year', ask:'Average days-to-onset per year.',
-  sql:`SELECT gn_report_date[1:4] AS year,\n       ROUND(AVG(TRY_CAST(when_days_to_onset AS INTEGER)),1) AS avg_days_to_onset\nFROM v WHERE when_days_to_onset <> '' GROUP BY 1 ORDER BY 1`},
- {id:'Q15', t:'Recovery vs disability', ask:'Counts by recovered / disabling outcome flags.',
-  sql:`SELECT what_outcome_recovered, what_outcome_disabling, COUNT(*) AS reports\nFROM v GROUP BY 1,2 ORDER BY reports DESC`},
- {id:'Q17', t:'Sex × outcome', ask:'Reports, deaths-flagged and serious-flagged by sex.',
-  sql:`SELECT gn_sex, COUNT(*) AS reports,\n       SUM(CASE WHEN gn_outcome_died='1' THEN 1 ELSE 0 END) AS deaths,\n       SUM(CASE WHEN gn_outcome_serious='1' THEN 1 ELSE 0 END) AS serious\nFROM v GROUP BY 1 ORDER BY reports DESC`},
- {id:'Q18', t:'Reporter type × seriousness', ask:'Serious-flag share by who reported.',
-  sql:`SELECT who_reporter_class,\n       ROUND(100.0*SUM(CASE WHEN gn_outcome_serious='1' THEN 1 ELSE 0 END)/COUNT(*),2) AS pct_serious\nFROM v GROUP BY 1 ORDER BY pct_serious DESC`},
- {id:'Q20', t:'React19 / PACVS post-acute phenotype', ask:'By year, reports mentioning the post-acute cluster (fatigue, cognitive, tachycardia, paraesthesia, exercise intolerance).',
-  sql:`SELECT gn_report_date[1:4] AS year, COUNT(*) AS reports\nFROM v\nWHERE what_symptoms_full ILIKE '%fatigue%' OR what_symptoms_full ILIKE '%cognitive%'\n   OR what_symptoms_full ILIKE '%tachycard%' OR what_symptoms_full ILIKE '%paraesthesia%'\n   OR what_symptoms_full ILIKE '%paresthesia%' OR what_symptoms_full ILIKE '%exercise%'\nGROUP BY 1 ORDER BY 1`},
- {id:'PREG', t:'Pregnancy-related reports (rows)', ask:'Pull the actual reports mentioning pregnancy / fetal / miscarriage / stillbirth.', rows:true,
-  sql:`SELECT * FROM v\nWHERE what_symptoms_full ILIKE '%pregnan%' OR what_symptoms_full ILIKE '%abortion%'\n   OR what_symptoms_full ILIKE '%miscarriage%' OR what_symptoms_full ILIKE '%foetal%'\n   OR what_symptoms_full ILIKE '%fetal%' OR what_symptoms_full ILIKE '%stillbirth%'`},
- {id:'R3', t:'Deaths flagged, age 65+ (rows)', ask:'Pull the actual reports flagged died in the 65+ cohort (a death FLAG, not a vaccine-caused death).', rows:true,
-  sql:`SELECT * FROM v WHERE gn_outcome_died='1' AND TRY_CAST(gn_age_years AS DOUBLE) >= 65`},
- {id:'T1', t:'Specific lot family (rows)', ask:'Pull reports for an example set of lots (edit lots in the custom filter).', rows:true,
-  sql:`SELECT * FROM v WHERE gn_lot_number IN ('EL3248','EL9261','EL0140','EL9543','EN6201')`}
-];
+// columns shown for "pull the rows" results (the rest are in the full CSV on the mirror)
+const ROW_COLS = ['gn_id','gn_report_date','gn_age_years','gn_sex','gn_state_region','gn_vaccine_name',
+  'gn_mfr_name','gn_dose_number','gn_lot_number','when_days_to_onset','gn_symptoms_primary',
+  'what_symptoms_full','gn_outcome_died','gn_outcome_serious','gn_outcome_er'];
 
 const $ = id => document.getElementById(id);
-let db=null, conn=null, loadedName='', loadedHash='', loadedRows=0;
-let acct={email:'',at:''}, currentRows=null, currentCols=null, currentTitle='', currentSql='', currentAsk='';
+let ROWS=[], loadedName='', loadedHash='', acct={email:'',at:''};
+let currentRows=null, currentCols=null, currentTitle='', currentAsk='';
 
 // consent
 $('acceptBtn').addEventListener('click', ()=>{ acct={email:($('acctEmail').value||'').trim(), at:new Date().toISOString()};
   try{localStorage.setItem('vaers_consent',JSON.stringify(acct));}catch(e){} $('gate').classList.add('hidden'); });
 (function(){ try{const c=JSON.parse(localStorage.getItem('vaers_consent')||'null'); if(c&&c.at){acct=c;$('gate').classList.add('hidden');}}catch(e){} })();
 
+// helpers
+const yr = r => (r.gn_report_date||'').slice(0,4);
+const ageN = r => { const x=parseFloat(r.gn_age_years); return isNaN(x)?null:x; };
+const ilike = (s,sub) => (s||'').toLowerCase().includes(sub.toLowerCase());
+const isOne = v => v==='1';
+const ud = v => (v===undefined||v===null||v==='') ? 'unavailable' : v;
+function tally(rows, keyFn){ const m=new Map(); for(const r of rows){ const k=keyFn(r); if(k==null||k==='')continue;
+  m.set(k,(m.get(k)||0)+1);} return [...m.entries()]; }
+function ageBand(r){ const a=ageN(r); if(a===null)return 'unknown'; if(a<18)return 'under_18'; if(a<30)return '18_29'; if(a<65)return '30_64'; return '65_plus'; }
+
+// ---- the published questions (QUERIES.md), reimplemented over the parsed rows ----
+const PRESETS = [
+ {id:'Q01',t:'Report volume by year',ask:'How many reports were filed each year?',run:R=>{
+   const o=tally(R, yr).sort((a,b)=>a[0].localeCompare(b[0])).map(([year,reports])=>({year,reports}));
+   return {cols:['year','reports'],rows:o};}},
+ {id:'Q03',t:'Mortality by manufacturer',ask:'Reports and how many flagged a death, per manufacturer (a death FLAG is not a vaccine-caused death).',run:R=>{
+   const m=new Map(); for(const r of R){const k=ud(r.gn_mfr_name); if(!m.has(k))m.set(k,{reports:0,deaths:0}); const o=m.get(k); o.reports++; if(isOne(r.gn_outcome_died))o.deaths++;}
+   return {cols:['gn_mfr_name','reports','deaths'],rows:[...m].map(([gn_mfr_name,o])=>({gn_mfr_name,...o})).sort((a,b)=>b.deaths-a.deaths)};}},
+ {id:'Q04',t:'Myocarditis / pericarditis, males under 30',ask:'By year, reports mentioning myo/pericarditis in males under 30 (the marquee pattern — a question, not a verdict).',run:R=>{
+   const f=R.filter(r=>(ilike(r.what_symptoms_full,'myocard')||ilike(r.what_symptoms_full,'pericard'))&&r.gn_sex==='M'&&ageN(r)!==null&&ageN(r)<30);
+   const o=tally(f,yr).sort((a,b)=>a[0].localeCompare(b[0])).map(([year,reports])=>({year,reports}));
+   return {cols:['year','reports'],rows:o};}},
+ {id:'Q02',t:'Serious outcomes, COVID vs flu',ask:'Reports and serious-flagged counts for COVID vs flu vaccines.',run:R=>{
+   const f=R.filter(r=>ilike(r.gn_vaccine_name,'COVID')||ilike(r.gn_vaccine_name,'FLU'));
+   const m=new Map(); for(const r of f){const k=ud(r.gn_vaccine_name); if(!m.has(k))m.set(k,{reports:0,serious:0}); const o=m.get(k); o.reports++; if(isOne(r.gn_outcome_serious))o.serious++;}
+   return {cols:['gn_vaccine_name','reports','serious'],rows:[...m].map(([gn_vaccine_name,o])=>({gn_vaccine_name,...o})).sort((a,b)=>b.reports-a.reports)};}},
+ {id:'Q05',t:'Onset latency',ask:'Distribution of days from vaccination to event onset.',run:R=>{
+   const f=R.filter(r=>(r.when_days_to_onset||'')!==''); const o=tally(f,r=>{const x=parseInt(r.when_days_to_onset,10);return isNaN(x)?null:x;})
+     .sort((a,b)=>a[0]-b[0]).map(([days_to_onset,reports])=>({days_to_onset,reports}));
+   return {cols:['days_to_onset','reports'],rows:o};}},
+ {id:'Q06',t:'Lot clustering',ask:'Which lots carry the most reports? (clustering reflects distribution volume too — a question, not a verdict).',run:R=>{
+   const m=new Map(); for(const r of R){ if((r.gn_lot_number||'')==='')continue; const k=r.gn_lot_number+''+ud(r.gn_mfr_name); m.set(k,(m.get(k)||0)+1);}
+   const o=[...m].map(([k,reports])=>{const [gn_lot_number,gn_mfr_name]=k.split('');return {gn_lot_number,gn_mfr_name,reports};}).sort((a,b)=>b.reports-a.reports).slice(0,100);
+   return {cols:['gn_lot_number','gn_mfr_name','reports'],rows:o};}},
+ {id:'Q07',t:'Geographic clustering',ask:'Reports by state / region (tracks population and reporting culture).',run:R=>{
+   const o=tally(R,r=>ud(r.gn_state_region)).map(([gn_state_region,reports])=>({gn_state_region,reports})).sort((a,b)=>b.reports-a.reports);
+   return {cols:['gn_state_region','reports'],rows:o};}},
+ {id:'Q08',t:'Symptom baseline',ask:'Most frequent primary symptoms across all reports.',run:R=>{
+   const f=R.filter(r=>(r.gn_symptoms_primary||'')!==''); const o=tally(f,r=>r.gn_symptoms_primary).map(([gn_symptoms_primary,reports])=>({gn_symptoms_primary,reports})).sort((a,b)=>b.reports-a.reports).slice(0,100);
+   return {cols:['gn_symptoms_primary','reports'],rows:o};}},
+ {id:'Q09',t:'Reporter type',ask:'Who filed the reports (clinician, patient, manufacturer…)?',run:R=>{
+   const o=tally(R,r=>ud(r.who_reporter_class)).map(([who_reporter_class,reports])=>({who_reporter_class,reports})).sort((a,b)=>b.reports-a.reports);
+   return {cols:['who_reporter_class','reports'],rows:o};}},
+ {id:'Q10',t:'Serious-rate by year',ask:'What share of each year’s reports were flagged serious?',run:R=>{
+   const m=new Map(); for(const r of R){const k=yr(r); if(k==='')continue; if(!m.has(k))m.set(k,{reports:0,serious:0}); const o=m.get(k); o.reports++; if(isOne(r.gn_outcome_serious))o.serious++;}
+   return {cols:['year','reports','pct_serious'],rows:[...m].map(([year,o])=>({year,reports:o.reports,pct_serious:Math.round(1000*o.serious/o.reports)/10})).sort((a,b)=>b.pct_serious-a.pct_serious)};}},
+ {id:'Q11',t:'Dose-number effect',ask:'Reports by dose number in series.',run:R=>{
+   const o=tally(R,r=>ud(r.gn_dose_number)).map(([gn_dose_number,reports])=>({gn_dose_number,reports})).sort((a,b)=>b.reports-a.reports);
+   return {cols:['gn_dose_number','reports'],rows:o};}},
+ {id:'Q12',t:'Age × manufacturer',ask:'Reports by manufacturer across age bands.',run:R=>{
+   const m=new Map(); for(const r of R){const k=ud(r.gn_mfr_name)+''+ageBand(r); m.set(k,(m.get(k)||0)+1);}
+   const o=[...m].map(([k,reports])=>{const [gn_mfr_name,age_band]=k.split('');return {gn_mfr_name,age_band,reports};}).sort((a,b)=>a.gn_mfr_name.localeCompare(b.gn_mfr_name)||a.age_band.localeCompare(b.age_band));
+   return {cols:['gn_mfr_name','age_band','reports'],rows:o};}},
+ {id:'Q13',t:'Time-to-onset shift by year',ask:'Average days-to-onset per year.',run:R=>{
+   const m=new Map(); for(const r of R){ if((r.when_days_to_onset||'')==='')continue; const x=parseInt(r.when_days_to_onset,10); if(isNaN(x))continue; const k=yr(r); if(k==='')continue; if(!m.has(k))m.set(k,{s:0,n:0}); const o=m.get(k); o.s+=x; o.n++;}
+   return {cols:['year','avg_days_to_onset'],rows:[...m].map(([year,o])=>({year,avg_days_to_onset:Math.round(10*o.s/o.n)/10})).sort((a,b)=>a.year.localeCompare(b.year))};}},
+ {id:'Q15',t:'Recovery vs disability',ask:'Counts by recovered / disabling outcome flags.',run:R=>{
+   const m=new Map(); for(const r of R){const k=ud(r.what_outcome_recovered)+''+ud(r.what_outcome_disabling); m.set(k,(m.get(k)||0)+1);}
+   const o=[...m].map(([k,reports])=>{const [recovered,disabling]=k.split('');return {what_outcome_recovered:recovered,what_outcome_disabling:disabling,reports};}).sort((a,b)=>b.reports-a.reports);
+   return {cols:['what_outcome_recovered','what_outcome_disabling','reports'],rows:o};}},
+ {id:'Q17',t:'Sex × outcome',ask:'Reports, deaths-flagged and serious-flagged by sex.',run:R=>{
+   const m=new Map(); for(const r of R){const k=ud(r.gn_sex); if(!m.has(k))m.set(k,{reports:0,deaths:0,serious:0}); const o=m.get(k); o.reports++; if(isOne(r.gn_outcome_died))o.deaths++; if(isOne(r.gn_outcome_serious))o.serious++;}
+   return {cols:['gn_sex','reports','deaths','serious'],rows:[...m].map(([gn_sex,o])=>({gn_sex,...o})).sort((a,b)=>b.reports-a.reports)};}},
+ {id:'Q18',t:'Reporter type × seriousness',ask:'Serious-flag share by who reported.',run:R=>{
+   const m=new Map(); for(const r of R){const k=ud(r.who_reporter_class); if(!m.has(k))m.set(k,{reports:0,serious:0}); const o=m.get(k); o.reports++; if(isOne(r.gn_outcome_serious))o.serious++;}
+   return {cols:['who_reporter_class','pct_serious'],rows:[...m].map(([who_reporter_class,o])=>({who_reporter_class,pct_serious:Math.round(1000*o.serious/o.reports)/10})).sort((a,b)=>b.pct_serious-a.pct_serious)};}},
+ {id:'Q20',t:'React19 / PACVS post-acute phenotype',ask:'By year, reports mentioning the post-acute cluster (fatigue, cognitive, tachycardia, paraesthesia, exercise intolerance).',run:R=>{
+   const terms=['fatigue','cognitive','tachycard','paraesthesia','paresthesia','exercise'];
+   const f=R.filter(r=>terms.some(t=>ilike(r.what_symptoms_full,t)));
+   const o=tally(f,yr).sort((a,b)=>a[0].localeCompare(b[0])).map(([year,reports])=>({year,reports}));
+   return {cols:['year','reports'],rows:o};}},
+ {id:'PREG',t:'Pregnancy-related reports (rows)',ask:'The actual reports mentioning pregnancy / fetal / miscarriage / stillbirth.',rows:true,run:R=>{
+   const terms=['pregnan','abortion','miscarriage','foetal','fetal','stillbirth'];
+   return {rowsOnly:R.filter(r=>terms.some(t=>ilike(r.what_symptoms_full,t)))};}},
+ {id:'R3',t:'Deaths flagged, age 65+ (rows)',ask:'The actual reports flagged died in the 65+ cohort (a death FLAG, not a vaccine-caused death).',rows:true,run:R=>{
+   return {rowsOnly:R.filter(r=>isOne(r.gn_outcome_died)&&ageN(r)!==null&&ageN(r)>=65)};}},
+ {id:'T1',t:'Example lot family (rows)',ask:'Reports for an example set of lots (use the custom filter for your own).',rows:true,run:R=>{
+   const lots=new Set(['EL3248','EL9261','EL0140','EL9543','EN6201']);
+   return {rowsOnly:R.filter(r=>lots.has(r.gn_lot_number))};}}
+];
+
+// CSV parser (quotes, escaped quotes, commas)
+function parseCSV(text){
+  const rows=[]; let i=0, field='', row=[], inQ=false; const n=text.length;
+  while(i<n){ const c=text[i];
+    if(inQ){ if(c==='"'){ if(text[i+1]==='"'){field+='"';i+=2;continue;} inQ=false;i++;continue;} field+=c;i++;continue; }
+    if(c==='"'){inQ=true;i++;continue;}
+    if(c===','){row.push(field);field='';i++;continue;}
+    if(c==='\n'||c==='\r'){ if(c==='\r'&&text[i+1]==='\n')i++; row.push(field);field=''; if(row.length>1||row[0]!=='')rows.push(row); row=[]; i++; continue; }
+    field+=c;i++; }
+  if(field!==''||row.length){ row.push(field); if(row.length>1||row[0]!=='')rows.push(row); }
+  return rows;
+}
 async function sha256(buf){const h=await crypto.subtle.digest('SHA-256',buf);
   return [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join('');}
 
-async function initDb(){
-  if(db) return;
-  const bundles=duckdb.getJsDelivrBundles();
-  const bundle=await duckdb.selectBundle(bundles);
-  const workerUrl=URL.createObjectURL(new Blob([`importScripts("${bundle.mainWorker}");`],{type:'text/javascript'}));
-  const worker=new Worker(workerUrl);
-  db=new duckdb.AsyncDuckDB(new duckdb.ConsoleLogger(), worker);
-  await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
-  URL.revokeObjectURL(workerUrl);
-  conn=await db.connect();
-}
-
-async function loadBytes(bytes, name){
-  const prog=$('prog'); prog.style.display='block'; prog.firstElementChild.style.width='30%';
-  $('loadStatus').textContent='Computing fingerprint…';
-  loadedName=name; loadedHash=await sha256(bytes);
-  $('hashWrap').classList.remove('hidden'); $('hashOut').textContent=loadedHash;
-  const expected=(($('expectedHash').value||'').trim()).toLowerCase(); const vd=$('hashVerdict');
-  vd.innerHTML = expected ? (expected===loadedHash?'<span class="pill ok">✓ matches manifest</span>':'<span class="pill bad">✗ does NOT match — do not trust this file</span>')
-                          : '<span class="pill warn">no expected hash given</span>';
-  prog.firstElementChild.style.width='55%'; $('loadStatus').textContent='Loading into DuckDB-WASM…';
-  await initDb();
-  try{ await conn.query('DROP VIEW IF EXISTS v'); }catch(e){}
-  await db.registerFileBuffer('vaers.csv', bytes);
-  await conn.query(`CREATE VIEW v AS SELECT * FROM read_csv_auto('vaers.csv', header=true, all_varchar=true, sample_size=-1)`);
-  loadedRows=Number((await conn.query('SELECT COUNT(*) AS n FROM v')).toArray()[0].n);
-  prog.firstElementChild.style.width='100%';
-  $('loadStatus').innerHTML=`Loaded <b>${loadedRows.toLocaleString()}</b> reports from <b>${name}</b>.`;
-  $('snapLine').textContent=`Loaded ${loadedRows.toLocaleString()} reports · file ${name} · SHA-256 ${loadedHash.slice(0,16)}…`;
-  setTimeout(()=>{prog.style.display='none';prog.firstElementChild.style.width='0';},600);
-  renderPresets(); await buildBrowse();
+async function ingest(bytes, name){
+  loadedName=name;
+  try{ loadedHash=await sha256(bytes); $('hashWrap').classList.remove('hidden'); $('hashOut').textContent=loadedHash;
+    const expected=(($('expectedHash').value||'').trim()).toLowerCase(); const vd=$('hashVerdict');
+    vd.innerHTML = expected ? (expected===loadedHash?'<span class="pill ok">✓ matches manifest</span>':'<span class="pill bad">✗ does NOT match</span>')
+                            : '<span class="pill warn">no expected hash given</span>';
+  }catch(e){ loadedHash='(hash unavailable)'; }
+  const text=new TextDecoder('utf-8').decode(bytes);
+  const grid=parseCSV(text);
+  if(grid.length<2){ $('loadStatus').innerHTML='<span class="err">No rows parsed.</span>'; return; }
+  const cols=grid[0].map(s=>s.trim());
+  ROWS=grid.slice(1).map(r=>{const o={}; cols.forEach((c,k)=>o[c]=r[k]==null?'':r[k]); return o;});
+  $('loadStatus').innerHTML=`Loaded <b>${ROWS.length.toLocaleString()}</b> reports from <b>${name}</b>.`;
+  $('snapLine').textContent=`Loaded ${ROWS.length.toLocaleString()} reports · file ${name}`+ (loadedHash&&loadedHash[0]!=='('?` · SHA-256 ${loadedHash.slice(0,16)}…`:'');
+  renderPresets(); buildBrowse();
   $('askCard').style.display='block'; $('browseCard').style.display='block';
 }
 
-function renderPresets(){
-  const w=$('presets'); w.innerHTML='';
+function renderPresets(){ const w=$('presets'); w.innerHTML='';
   for(const p of PRESETS){ const b=document.createElement('button'); b.className='preset';
-    b.innerHTML=`<b>${p.id} · ${p.t}</b>${p.ask}`; b.onclick=()=>runSql(p.sql, `${p.id} — ${p.t}`, p.ask); w.appendChild(b); }
+    b.innerHTML=`<b>${p.id} · ${p.t}</b>${p.ask}`; b.onclick=()=>runPreset(p); w.appendChild(b); } }
+
+function runPreset(p){
+  const out=p.run(ROWS);
+  if(out.rowsOnly!==undefined){ showRows(out.rowsOnly, `${p.id} — ${p.t}`, p.ask); }
+  else { show(out.cols, out.rows, `${p.id} — ${p.t}`, p.ask); }
 }
 
-async function vals(sql){ try{ return (await conn.query(sql)).toArray(); }catch(e){ return []; } }
-function chipRow(elId, rows, label, onclick){
-  const el=$(elId); el.innerHTML='';
-  if(!rows.length){ el.innerHTML='<span class="muted">unavailable</span>'; return; }
-  for(const r of rows){ const k=r[label]==null||r[label]===''?'unavailable':String(r[label]); const n=Number(r.n);
-    const c=document.createElement('span'); c.className='chip'; c.innerHTML=`${k}<span class="n">${n.toLocaleString()}</span>`;
-    c.onclick=()=>onclick(k); el.appendChild(c); }
-}
-async function buildBrowse(){
-  chipRow('f_year', await vals(`SELECT gn_report_date[1:4] AS k, COUNT(*) n FROM v GROUP BY 1 ORDER BY 1`), 'k',
-    v=>runSql(`SELECT * FROM v WHERE gn_report_date[1:4]='${v}'`, `Year ${v}`, `All reports filed in ${v}.`));
-  chipRow('f_vax', await vals(`SELECT gn_vaccine_name AS k, COUNT(*) n FROM v WHERE gn_vaccine_name<>'' GROUP BY 1 ORDER BY n DESC LIMIT 40`), 'k',
-    v=>runSql(`SELECT * FROM v WHERE gn_vaccine_name=$$${v}$$`, `Vaccine: ${v}`, `Reports naming vaccine "${v}".`));
-  chipRow('f_manu', await vals(`SELECT gn_mfr_name AS k, COUNT(*) n FROM v WHERE gn_mfr_name<>'' GROUP BY 1 ORDER BY n DESC LIMIT 40`), 'k',
-    v=>runSql(`SELECT * FROM v WHERE gn_mfr_name=$$${v}$$`, `Manufacturer: ${v}`, `Reports naming manufacturer "${v}".`));
-  chipRow('f_sex', await vals(`SELECT gn_sex AS k, COUNT(*) n FROM v GROUP BY 1 ORDER BY n DESC`), 'k',
-    v=>runSql(`SELECT * FROM v WHERE gn_sex=$$${v}$$`, `Sex: ${v}`, `Reports with recorded sex "${v}".`));
-  chipRow('f_age', await vals(`SELECT CASE WHEN TRY_CAST(gn_age_years AS DOUBLE)<18 THEN 'under_18'
-     WHEN TRY_CAST(gn_age_years AS DOUBLE)<30 THEN '18_29' WHEN TRY_CAST(gn_age_years AS DOUBLE)<65 THEN '30_64'
-     WHEN TRY_CAST(gn_age_years AS DOUBLE)>=65 THEN '65_plus' ELSE 'unknown' END AS k, COUNT(*) n FROM v GROUP BY 1 ORDER BY 1`), 'k',
-    v=>{const m={under_18:'TRY_CAST(gn_age_years AS DOUBLE)<18','18_29':'TRY_CAST(gn_age_years AS DOUBLE)>=18 AND TRY_CAST(gn_age_years AS DOUBLE)<30',
-      '30_64':'TRY_CAST(gn_age_years AS DOUBLE)>=30 AND TRY_CAST(gn_age_years AS DOUBLE)<65','65_plus':'TRY_CAST(gn_age_years AS DOUBLE)>=65',
-      unknown:'TRY_CAST(gn_age_years AS DOUBLE) IS NULL'}[v]; runSql(`SELECT * FROM v WHERE ${m}`, `Age band: ${v}`, `Reports in age band ${v}.`); });
-  chipRow('f_state', await vals(`SELECT gn_state_region AS k, COUNT(*) n FROM v WHERE gn_state_region<>'' GROUP BY 1 ORDER BY n DESC LIMIT 60`), 'k',
-    v=>runSql(`SELECT * FROM v WHERE gn_state_region=$$${v}$$`, `State: ${v}`, `Reports from ${v}.`));
-  chipRow('f_reporter', await vals(`SELECT who_reporter_class AS k, COUNT(*) n FROM v GROUP BY 1 ORDER BY n DESC`), 'k',
-    v=>runSql(`SELECT * FROM v WHERE who_reporter_class=$$${v}$$`, `Reporter: ${v}`, `Reports filed by "${v}".`));
+function chips(elId, pairs, onclick){ const el=$(elId); el.innerHTML='';
+  if(!pairs.length){ el.innerHTML='<span class="muted">unavailable</span>'; return; }
+  for(const [k,n] of pairs){ const key=k===''||k==null?'unavailable':String(k);
+    const c=document.createElement('span'); c.className='chip'; c.innerHTML=`${key}<span class="n">${n.toLocaleString()}</span>`;
+    c.onclick=()=>onclick(key); el.appendChild(c); } }
+function buildBrowse(){
+  chips('f_year', tally(ROWS,yr).sort((a,b)=>a[0].localeCompare(b[0])), v=>showRows(ROWS.filter(r=>yr(r)===v),`Year ${v}`,`All reports filed in ${v}.`));
+  chips('f_vax', tally(ROWS,r=>r.gn_vaccine_name).sort((a,b)=>b[1]-a[1]).slice(0,40), v=>showRows(ROWS.filter(r=>(r.gn_vaccine_name||'unavailable')===v||r.gn_vaccine_name===v),`Vaccine: ${v}`,`Reports naming vaccine "${v}".`));
+  chips('f_manu', tally(ROWS,r=>r.gn_mfr_name).sort((a,b)=>b[1]-a[1]).slice(0,40), v=>showRows(ROWS.filter(r=>r.gn_mfr_name===v),`Manufacturer: ${v}`,`Reports naming manufacturer "${v}".`));
+  chips('f_sex', tally(ROWS,r=>ud(r.gn_sex)).sort((a,b)=>b[1]-a[1]), v=>showRows(ROWS.filter(r=>ud(r.gn_sex)===v),`Sex: ${v}`,`Reports with recorded sex "${v}".`));
+  chips('f_age', tally(ROWS,ageBand).sort((a,b)=>a[0].localeCompare(b[0])), v=>showRows(ROWS.filter(r=>ageBand(r)===v),`Age band: ${v}`,`Reports in age band ${v}.`));
+  chips('f_state', tally(ROWS,r=>r.gn_state_region).sort((a,b)=>b[1]-a[1]).slice(0,60), v=>showRows(ROWS.filter(r=>r.gn_state_region===v),`State: ${v}`,`Reports from ${v}.`));
+  chips('f_reporter', tally(ROWS,r=>ud(r.who_reporter_class)).sort((a,b)=>b[1]-a[1]), v=>showRows(ROWS.filter(r=>ud(r.who_reporter_class)===v),`Reporter: ${v}`,`Reports filed by "${v}".`));
 }
 
-async function runSql(sql, title, ask){
-  if(!conn){ alert('Load the data first.'); return; }
-  currentSql=sql; currentTitle=title; currentAsk=ask||'';
-  $('resultCard').style.display='block'; $('resultTitle').textContent='— '+title;
-  $('resultAsk').textContent=ask||''; $('resultAsk').style.display=ask?'block':'none';
-  $('resultSql').textContent=sql.trim(); $('resultMeta').textContent='Running…';
-  $('resultCard').scrollIntoView({behavior:'smooth',block:'start'});
-  try{
-    const res=await conn.query(sql); const fields=res.schema.fields.map(f=>f.name);
-    const rows=res.toArray().map(r=>{const o={};for(const k of fields){let val=r[k];
-      if(typeof val==='bigint')val=Number(val); o[k]=(val===null||val===undefined||val==='')?'unavailable':val;} return o;});
-    currentCols=fields; currentRows=rows; renderTable(fields, rows);
-    $('resultMeta').innerHTML=`<b>${rows.length.toLocaleString()}</b> row(s) returned · from ${loadedRows.toLocaleString()} reports loaded`;
-  }catch(e){ $('resultMeta').innerHTML='<span class="err">Query error: '+(e.message||e)+'</span>'; $('resultTable').innerHTML=''; currentRows=null; }
-}
-function renderTable(cols, rows){
-  const t=$('resultTable');
-  let h='<thead><tr>'+cols.map(c=>`<th>${c}</th>`).join('')+'</tr></thead><tbody>';
-  for(const r of rows.slice(0,2000)) h+='<tr>'+cols.map(c=>`<td>${String(r[c]).replace(/</g,'&lt;')}</td>`).join('')+'</tr>';
-  h+='</tbody>'; t.innerHTML=h;
-  if(rows.length>2000) $('resultMeta').insertAdjacentHTML('beforeend',` · showing first 2,000 (export gets all)`);
-}
-
-// custom filter
 $('runFilter').addEventListener('click', ()=>{
-  const esc=s=>s.replace(/'/g,"''"); const w=[];
-  const sym=$('qSym').value.trim(); if(sym)w.push(`what_symptoms_full ILIKE '%${esc(sym)}%'`);
-  const vax=$('qVax').value.trim(); if(vax)w.push(`gn_vaccine_name ILIKE '%${esc(vax)}%'`);
-  const manu=$('qManu').value.trim(); if(manu)w.push(`gn_mfr_name ILIKE '%${esc(manu)}%'`);
-  const sex=$('qSex').value; if(sex)w.push(`gn_sex='${esc(sex)}'`);
-  const amin=$('qAgeMin').value, amax=$('qAgeMax').value;
-  if(amin!=='')w.push(`TRY_CAST(gn_age_years AS DOUBLE) >= ${Number(amin)}`);
-  if(amax!=='')w.push(`TRY_CAST(gn_age_years AS DOUBLE) <= ${Number(amax)}`);
-  const yf=$('qYearFrom').value, yt=$('qYearTo').value;
-  if(yf!=='')w.push(`TRY_CAST(gn_report_date[1:4] AS INTEGER) >= ${Number(yf)}`);
-  if(yt!=='')w.push(`TRY_CAST(gn_report_date[1:4] AS INTEGER) <= ${Number(yt)}`);
-  const out=$('qOut').value; if(out)w.push(`${out}='1'`);
-  const where=w.length?'WHERE '+w.join(' AND '):'';
-  runSql(`SELECT * FROM v ${where} LIMIT 5000`, 'Custom filter', 'Your filter. Reports, not rates; a report is not proof of cause.');
+  const sym=$('qSym').value.trim(), vax=$('qVax').value.trim(), manu=$('qManu').value.trim(),
+        sex=$('qSex').value, amin=$('qAgeMin').value, amax=$('qAgeMax').value,
+        yf=$('qYearFrom').value, yt=$('qYearTo').value, out=$('qOut').value;
+  const f=ROWS.filter(r=>{
+    if(sym&&!ilike(r.what_symptoms_full,sym))return false;
+    if(vax&&!ilike(r.gn_vaccine_name,vax))return false;
+    if(manu&&!ilike(r.gn_mfr_name,manu))return false;
+    if(sex&&r.gn_sex!==sex)return false;
+    if(amin!==''&&!(ageN(r)!==null&&ageN(r)>=+amin))return false;
+    if(amax!==''&&!(ageN(r)!==null&&ageN(r)<=+amax))return false;
+    if(yf!==''&&!(/^\d{4}$/.test(yr(r))&&+yr(r)>=+yf))return false;
+    if(yt!==''&&!(/^\d{4}$/.test(yr(r))&&+yr(r)<=+yt))return false;
+    if(out&&!isOne(r[out]))return false;
+    return true;
+  });
+  showRows(f, 'Custom filter', 'Your filter. Reports, not rates; a report is not proof of cause.');
 });
 $('clearFilter').addEventListener('click', ()=>{['qSym','qVax','qManu','qAgeMin','qAgeMax','qYearFrom','qYearTo'].forEach(i=>$(i).value='');$('qSex').value='';$('qOut').value='';});
+
+function show(cols, rows, title, ask){
+  currentCols=cols; currentRows=rows.map(r=>{const o={};for(const c of cols)o[c]=ud(r[c]);return o;});
+  currentTitle=title; currentAsk=ask||''; render(title, ask);
+}
+function showRows(rows, title, ask){
+  currentCols=ROW_COLS.slice(); currentRows=rows.map(r=>{const o={};for(const c of ROW_COLS)o[c]=ud(r[c]);return o;});
+  currentTitle=title; currentAsk=ask||''; render(title, ask);
+}
+function render(title, ask){
+  $('resultCard').style.display='block'; $('resultTitle').textContent='— '+title;
+  $('resultAsk').textContent=ask||''; $('resultAsk').style.display=ask?'block':'none';
+  const t=$('resultTable');
+  $('resultMeta').innerHTML=`<b>${currentRows.length.toLocaleString()}</b> row(s) · from ${ROWS.length.toLocaleString()} reports loaded`;
+  if(!currentRows.length){ t.innerHTML='<tbody><tr><td>0 matches.</td></tr></tbody>'; $('resultCard').scrollIntoView({behavior:'smooth'}); return; }
+  let h='<thead><tr>'+currentCols.map(c=>`<th>${c}</th>`).join('')+'</tr></thead><tbody>';
+  for(const r of currentRows.slice(0,2000)) h+='<tr>'+currentCols.map(c=>`<td>${String(r[c]).replace(/</g,'&lt;')}</td>`).join('')+'</tr>';
+  h+='</tbody>'; t.innerHTML=h;
+  if(currentRows.length>2000) $('resultMeta').insertAdjacentHTML('beforeend',` · showing first 2,000 (export gets all)`);
+  $('resultCard').scrollIntoView({behavior:'smooth',block:'start'});
+}
 
 // exports
 function provLines(){return ['Question: '+currentTitle+(currentAsk?(' — '+currentAsk):''),
   'Source file: '+(loadedName||'(local)')+' · SHA-256: '+loadedHash,
   'Acknowledged: '+(acct.at||'(not recorded)')+(acct.email?(' · '+acct.email):''),
-  'SQL: '+currentSql.replace(/\s+/g,' ').trim(), 'Exported: '+new Date().toISOString()];}
+  'Exported: '+new Date().toISOString()];}
 function dl(name,text,mime){const b=new Blob([text],{type:mime});const a=document.createElement('a');
   a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
 function csvCell(v){const s=String(v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}
@@ -417,26 +421,25 @@ $('exportCsv').addEventListener('click', ()=>{ if(!currentRows||!currentRows.len
 $('exportJson').addEventListener('click', ()=>{ if(!currentRows||!currentRows.length){alert('Run a question first.');return;}
   dl('vaers_result.json', JSON.stringify({_caveats:EXPORT_CAVEATS,_provenance:{question:currentTitle,ask:currentAsk,
     source_file:loadedName||'(local)',source_sha256:loadedHash,acknowledged_at:acct.at||null,acknowledged_email:acct.email||null,
-    sql:currentSql.replace(/\s+/g,' ').trim(),exported_at:new Date().toISOString()},rows:currentRows},null,2),'application/json'); });
+    exported_at:new Date().toISOString()},rows:currentRows},null,2),'application/json'); });
 $('uninstallBtn').addEventListener('click', ()=>{ if(!confirm('Remove your acknowledgement and stored state from this browser?'))return;
   try{localStorage.removeItem('vaers_consent');}catch(e){}
-  $('askCard').style.display='none';$('browseCard').style.display='none';$('resultCard').style.display='none';$('hashWrap').classList.add('hidden');
+  ROWS=[];currentRows=null;$('askCard').style.display='none';$('browseCard').style.display='none';$('resultCard').style.display='none';$('hashWrap').classList.add('hidden');
   $('loadStatus').innerHTML='<span class="ok-txt">Removed. Reload the page to start again.</span>'; });
 
 // load events
 $('fileInput').addEventListener('change', async e=>{const f=e.target.files[0];if(!f)return;
-  $('loadStatus').textContent='Reading file…'; await loadBytes(new Uint8Array(await f.arrayBuffer()), f.name);});
+  $('loadStatus').textContent='Reading file…'; await ingest(new Uint8Array(await f.arrayBuffer()), f.name);});
 $('fetchBtn').addEventListener('click', async()=>{const u=($('urlInput').value||'').trim();if(!u)return;
-  try{$('prog').style.display='block';$('prog').firstElementChild.style.width='15%';$('loadStatus').textContent='Fetching…';
-    const r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status); await loadBytes(new Uint8Array(await r.arrayBuffer()), u.split('/').pop()||'vaers.csv');}
-  catch(e){$('loadStatus').innerHTML='<span class="err">Fetch failed: '+(e.message||e)+'. If CORS-blocked, download it and use the file picker.</span>';$('prog').style.display='none';}});
+  try{$('loadStatus').textContent='Fetching…'; const r=await fetch(u); if(!r.ok)throw new Error('HTTP '+r.status);
+    await ingest(new Uint8Array(await r.arrayBuffer()), u.split('/').pop()||'vaers.csv');}
+  catch(e){$('loadStatus').innerHTML='<span class="err">Fetch failed: '+(e.message||e)+'. If CORS-blocked, download it and use the file picker.</span>';}});
 
-// auto-load the bundled sample (zero-setup over HTTP/Pages)
+// auto-load the bundled sample
 (async function autoload(){
-  await initDb().catch(()=>{});
   const tries=['data/vaers_sample_1000.csv','data/vaers_sample_300.csv','vaers_sample_1000.csv','vaers_sample_300.csv'];
-  for(const u of tries){ try{ const r=await fetch(u); if(r.ok){ await loadBytes(new Uint8Array(await r.arrayBuffer()), u.split('/').pop()); return; } }catch(e){} }
-  $('loadStatus').innerHTML='Engine ready. Load <code>data/vaers_sample_1000.csv</code> or the full <code>vaers_1990_2026_69col.csv</code> with the file picker above.';
+  for(const u of tries){ try{ const r=await fetch(u); if(r.ok){ await ingest(new Uint8Array(await r.arrayBuffer()), u.split('/').pop()); return; } }catch(e){} }
+  $('loadStatus').innerHTML='Load <code>data/vaers_sample_1000.csv</code> or the full <code>vaers_1990_2026_69col.csv</code> with the file picker above.';
 })();
 </script>
 </body>
