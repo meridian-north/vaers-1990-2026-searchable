@@ -121,20 +121,37 @@
 
   <div class="card">
     <h2>Data</h2>
-    <p class="hint">Loads the sample automatically. For real results, load the full
-      <b>vaers_1990_2026_69col.csv</b> (from the Proton mirror) with the file picker or a URL, and verify its SHA-256.</p>
+    <p class="hint"><b>You don't have to touch this box to explore.</b> A 1,000-report sample has already
+      loaded — just scroll down to the questions and start clicking. This box is only here if you want the
+      <i>full</i> dataset, or want to confirm a file is genuine.</p>
     <div class="status" id="loadStatus">Loading the sample…</div>
-    <div class="row" style="margin-top:10px">
-      <div class="field"><label>Load a file (CSV)</label><input type="file" id="fileInput" accept=".csv,.tsv,.txt"></div>
-      <div class="field" style="flex:1;min-width:260px"><label>…or fetch from a URL</label><input type="text" id="urlInput" placeholder="https://…/vaers_1990_2026_69col.csv"></div>
-      <div class="field"><label>&nbsp;</label><button id="fetchBtn" class="ghost">Fetch</button></div>
-    </div>
-    <div class="row" style="margin-top:8px">
-      <div class="field" style="flex:1;min-width:320px"><label>Expected SHA-256 (optional)</label><input type="text" id="expectedHash" placeholder="paste to verify"></div>
-    </div>
-    <div id="hashWrap" class="hidden" style="margin-top:8px">
-      <label>This file's SHA-256 <span id="hashVerdict"></span></label><div class="hashbox" id="hashOut"></div>
-    </div>
+
+    <details style="margin-top:12px">
+      <summary>Load the full dataset (optional)</summary>
+      <p class="hint" style="margin-top:8px">The auto-loaded sample is just a taster (1,000 reports). For real
+        numbers, download the full <b>vaers_1990_2026_69col.csv</b> (~2 million reports) from the Proton mirror,
+        then load it here — either pick the downloaded file, or paste a direct link to it and press Fetch.
+        It still runs entirely in your browser; nothing is uploaded anywhere.</p>
+      <div class="row">
+        <div class="field"><label>Pick the file you downloaded</label><input type="file" id="fileInput" accept=".csv,.tsv,.txt"></div>
+        <div class="field" style="flex:1;min-width:260px"><label>…or paste a link to it</label><input type="text" id="urlInput" placeholder="https://…/vaers_1990_2026_69col.csv"></div>
+        <div class="field"><label>&nbsp;</label><button id="fetchBtn" class="ghost">Fetch</button></div>
+      </div>
+    </details>
+
+    <details style="margin-top:10px">
+      <summary>Confirm a file is genuine (optional)</summary>
+      <p class="hint" style="margin-top:8px">A <b>SHA-256</b> is a file's fingerprint — change one byte and it
+        changes completely. The project publishes the official fingerprint in <b>MANIFEST_SHA256.txt</b>. Paste it
+        below and the tool tells you whether your file matches (✓ genuine and unaltered) or not (✗ don't trust it).
+        Leave it blank to just explore — the tool still shows you your file's own fingerprint for reference.</p>
+      <div class="row">
+        <div class="field" style="flex:1;min-width:320px"><label>Official fingerprint from MANIFEST_SHA256.txt (paste to check)</label><input type="text" id="expectedHash" placeholder="paste the SHA-256 to compare"></div>
+      </div>
+      <div id="hashWrap" class="hidden" style="margin-top:8px">
+        <label>This file's fingerprint <span id="hashVerdict"></span></label><div class="hashbox" id="hashOut"></div>
+      </div>
+    </details>
   </div>
 
   <div class="card" id="askCard" style="display:none">
