@@ -10,6 +10,19 @@
   caused the event. Correlation is not causation. Counts are a floor — most
   events are never reported. Leads, not verdicts. Hypothesis-generating only.
   A field a source cannot report shows "unavailable", never zero.
+
+  BUILD RULES — presentation invariants (S221 IA review; do not regress):
+  1. NO HERO AGGREGATE: no raw count renders as an isolated large-type element.
+     Counts appear inline, at body scale, inside their qualifying context.
+  2. COUNT-CAVEAT COLOCATION: every element that displays a count carries its
+     caveat (reports not rates / no denominator) in the SAME element or card,
+     so a crop or screenshot cannot separate the number from its qualifier.
+  3. NEUTRAL SORT DEFAULT: browse views never default to report-volume order.
+     Chip lists display alphabetically; where a list is truncated for size, the
+     truncation is labeled. Volume-sort appears only where a published query
+     (QUERIES.md) explicitly asks a volume question.
+  4. UNIFORM CONTRAST: no opacity or contrast change keyed to record class,
+     ever. Elevate via position and structure only.
 -->
 <html lang="en">
 <head>
@@ -163,7 +176,8 @@
 
   <div class="card" id="browseCard" style="display:none">
     <h2>Browse — nothing to guess</h2>
-    <p class="hint">Click any value to pull its reports. Counts shown are reports, a floor.</p>
+    <p class="hint">Click any value to pull its reports. Counts shown are reports, a floor — not rates; no denominator.
+      Values are listed alphabetically; the order carries no signal about volume or risk.</p>
     <div style="margin-top:6px"><label>By year</label><div id="f_year"></div></div>
     <div style="margin-top:10px"><label>Vaccine type</label><div id="f_vax"></div></div>
     <div style="margin-top:10px"><label>Manufacturer</label><div id="f_manu"></div></div>
@@ -352,8 +366,8 @@ async function ingest(bytes, name){
   if(grid.length<2){ $('loadStatus').innerHTML='<span class="err">No rows parsed.</span>'; return; }
   const cols=grid[0].map(s=>s.trim());
   ROWS=grid.slice(1).map(r=>{const o={}; cols.forEach((c,k)=>o[c]=r[k]==null?'':r[k]); return o;});
-  $('loadStatus').innerHTML=`Loaded <b>${ROWS.length.toLocaleString()}</b> reports from <b>${name}</b>.`;
-  $('snapLine').textContent=`Loaded ${ROWS.length.toLocaleString()} reports · file ${name}`+ (loadedHash&&loadedHash[0]!=='('?` · SHA-256 ${loadedHash.slice(0,16)}…`:'');
+  $('loadStatus').innerHTML=`Loaded <b>${ROWS.length.toLocaleString()}</b> reports from <b>${name}</b> — counts of reports, not rates; no denominator.`;
+  $('snapLine').textContent=`Loaded ${ROWS.length.toLocaleString()} reports (not rates; no denominator) · file ${name}`+ (loadedHash&&loadedHash[0]!=='('?` · SHA-256 ${loadedHash.slice(0,16)}…`:'');
   renderPresets(); buildBrowse();
   $('askCard').style.display='block'; $('browseCard').style.display='block';
 }
@@ -373,14 +387,26 @@ function chips(elId, pairs, onclick){ const el=$(elId); el.innerHTML='';
   for(const [k,n] of pairs){ const key=k===''||k==null?'unavailable':String(k);
     const c=document.createElement('span'); c.className='chip'; c.innerHTML=`${key}<span class="n">${n.toLocaleString()}</span>`;
     c.onclick=()=>onclick(key); el.appendChild(c); } }
+// Neutral sort default (S221 build rule 3): browse chips display alphabetically,
+// never by report volume. Where a list must be truncated for size, membership is
+// the most-reported N values (a practical cap, labeled on screen) but the DISPLAY
+// order is still alphabetical so position carries no volume signal.
+const alphaPairs = pairs => pairs.sort((a,b)=>String(a[0]).localeCompare(String(b[0])));
+const capPairs = (pairs,n) => { const total=pairs.length;
+  const kept = total>n ? pairs.sort((a,b)=>b[1]-a[1]).slice(0,n) : pairs;
+  return {pairs:alphaPairs(kept), truncated: total>n, total, n}; };
+function chipsCapped(elId, capped, onclick){
+  chips(elId, capped.pairs, onclick);
+  if(capped.truncated){ const el=$(elId);
+    el.insertAdjacentHTML('beforeend',`<span class="muted" style="font-size:11px;display:inline-block;margin-top:4px">showing the ${capped.n} most-reported of ${capped.total.toLocaleString()} values, listed alphabetically — order carries no signal</span>`); } }
 function buildBrowse(){
   chips('f_year', tally(ROWS,yr).sort((a,b)=>a[0].localeCompare(b[0])), v=>showRows(ROWS.filter(r=>yr(r)===v),`Year ${v}`,`All reports filed in ${v}.`));
-  chips('f_vax', tally(ROWS,r=>r.gn_vaccine_name).sort((a,b)=>b[1]-a[1]).slice(0,40), v=>showRows(ROWS.filter(r=>(r.gn_vaccine_name||'unavailable')===v||r.gn_vaccine_name===v),`Vaccine: ${v}`,`Reports naming vaccine "${v}".`));
-  chips('f_manu', tally(ROWS,r=>r.gn_mfr_name).sort((a,b)=>b[1]-a[1]).slice(0,40), v=>showRows(ROWS.filter(r=>r.gn_mfr_name===v),`Manufacturer: ${v}`,`Reports naming manufacturer "${v}".`));
-  chips('f_sex', tally(ROWS,r=>ud(r.gn_sex)).sort((a,b)=>b[1]-a[1]), v=>showRows(ROWS.filter(r=>ud(r.gn_sex)===v),`Sex: ${v}`,`Reports with recorded sex "${v}".`));
+  chipsCapped('f_vax', capPairs(tally(ROWS,r=>r.gn_vaccine_name),40), v=>showRows(ROWS.filter(r=>(r.gn_vaccine_name||'unavailable')===v||r.gn_vaccine_name===v),`Vaccine: ${v}`,`Reports naming vaccine "${v}".`));
+  chipsCapped('f_manu', capPairs(tally(ROWS,r=>r.gn_mfr_name),40), v=>showRows(ROWS.filter(r=>r.gn_mfr_name===v),`Manufacturer: ${v}`,`Reports naming manufacturer "${v}".`));
+  chips('f_sex', alphaPairs(tally(ROWS,r=>ud(r.gn_sex))), v=>showRows(ROWS.filter(r=>ud(r.gn_sex)===v),`Sex: ${v}`,`Reports with recorded sex "${v}".`));
   chips('f_age', tally(ROWS,ageBand).sort((a,b)=>a[0].localeCompare(b[0])), v=>showRows(ROWS.filter(r=>ageBand(r)===v),`Age band: ${v}`,`Reports in age band ${v}.`));
-  chips('f_state', tally(ROWS,r=>r.gn_state_region).sort((a,b)=>b[1]-a[1]).slice(0,60), v=>showRows(ROWS.filter(r=>r.gn_state_region===v),`State: ${v}`,`Reports from ${v}.`));
-  chips('f_reporter', tally(ROWS,r=>ud(r.who_reporter_class)).sort((a,b)=>b[1]-a[1]), v=>showRows(ROWS.filter(r=>ud(r.who_reporter_class)===v),`Reporter: ${v}`,`Reports filed by "${v}".`));
+  chipsCapped('f_state', capPairs(tally(ROWS,r=>r.gn_state_region),60), v=>showRows(ROWS.filter(r=>r.gn_state_region===v),`State: ${v}`,`Reports from ${v}.`));
+  chips('f_reporter', alphaPairs(tally(ROWS,r=>ud(r.who_reporter_class))), v=>showRows(ROWS.filter(r=>ud(r.who_reporter_class)===v),`Reporter: ${v}`,`Reports filed by "${v}".`));
 }
 
 $('runFilter').addEventListener('click', ()=>{
@@ -415,7 +441,7 @@ function render(title, ask){
   $('resultCard').style.display='block'; $('resultTitle').textContent='— '+title;
   $('resultAsk').textContent=ask||''; $('resultAsk').style.display=ask?'block':'none';
   const t=$('resultTable');
-  $('resultMeta').innerHTML=`<b>${currentRows.length.toLocaleString()}</b> row(s) · from ${ROWS.length.toLocaleString()} reports loaded`;
+  $('resultMeta').innerHTML=`<b>${currentRows.length.toLocaleString()}</b> row(s) — reports, not rates; no denominator; not proof of causation · from ${ROWS.length.toLocaleString()} reports loaded`;
   if(!currentRows.length){ t.innerHTML='<tbody><tr><td>0 matches.</td></tr></tbody>'; $('resultCard').scrollIntoView({behavior:'smooth'}); return; }
   let h='<thead><tr>'+currentCols.map(c=>`<th>${c}</th>`).join('')+'</tr></thead><tbody>';
   for(const r of currentRows.slice(0,2000)) h+='<tr>'+currentCols.map(c=>`<td>${String(r[c]).replace(/</g,'&lt;')}</td>`).join('')+'</tr>';
