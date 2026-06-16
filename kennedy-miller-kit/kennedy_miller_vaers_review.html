@@ -111,6 +111,27 @@
     <p class="note">Addressing the uneven-bin critique: dividing each bucket by its width gives a per-day rate. Infant deaths peak at <strong>day 1 (28.7%/day)</strong>, not day 0 — consistent with "found the next morning." All-reports peak at day 0 (47.2%/day) — the same-day minor-reaction reporting signature. The cross-cohort comparison from v1 is unchanged, because every cohort shares the same bins. Full table in <span class="mono">data/onset_perday_normalized_v2.csv</span>.</p>
   </section>
 
+  <!-- MILLER STEELMAN -->
+  <section id="miller">
+    <h2>What Miller actually argued — and why the rebuttal still doesn't hold</h2>
+    <div class="caveat" style="border-color:var(--watch);background:#1c1a0e;color:#efe4b0;font-size:13.5px;margin-bottom:12px">
+      <strong>Contested ≠ dismissed.</strong> This kit does not caricature the paper. Miller anticipated the reporting-bias objection and built a specific defense. We represent it fairly, reproduce his numbers, and then show why the inference still cannot bear causal weight — in either direction.
+    </div>
+    <h3>His actual position (not the strawman)</h3>
+    <p class="note">Miller's claim was hedged, not absolute: <em>"While the findings in this paper are not proof of an association between infant vaccines and infant deaths, they are highly suggestive of a causal relationship."</em> He proposed a <strong>susceptibility-subset</strong> model (only predisposed infants at risk) and three mechanisms (inflammatory cytokines in the infant medulla; aluminium adjuvant crossing the blood–brain barrier; multi-vaccine synergistic toxicity). Headline numbers (All-Mortality, N=2605): <strong>58% of deaths within 3 days, 78.3% within 7 days</strong>; the day-after-vaccination count (760) exceeded the day-of count (440).</p>
+    <h3>His central defense — the "incubation period" argument</h3>
+    <p class="note">Miller argued a <em>pure</em> reporting artifact should peak on the <strong>day of vaccination</strong> (maximum temporal salience) and decline. Instead his data show fewer deaths on the day of vaccination (16.9%) than the day after (29.2%) — which he read as a biological incubation period, with cytokines peaking 2–4 days out. He concluded: <em>"reporting bias is unlikely to be entirely responsible for the clustering."</em> On the missing denominator he was explicit — VAERS has none, &lt;1% of events are reported — but argued it wouldn't be decisive, since susceptibility is individual and &gt;90% US coverage leaves almost no unvaccinated baseline.</p>
+    <h3>We reproduce his numbers — that's not the disagreement</h3>
+    <p class="note">Our independent pull (VAERS 1990–2026, infant &lt;1yr deaths) lands within ~3 points of Miller: <strong>55.3% within 3 days</strong> (he: 58%), <strong>77.0% within 7 days</strong> (he: 78.3%), day-after peak <strong>2.0× the day-of count</strong> (he: 1.7×). We do not dispute the arithmetic or the day-after peak. We dispute what it means.</p>
+    <h3>Why the inference still fails — three honest rejoinders</h3>
+    <div class="grid">
+      <div class="card"><div class="t">1 · The day-after peak is predicted by circadian discovery</div><div class="note">SIDS is a sleep death, overwhelmingly discovered in the <strong>morning</strong>. Vaccinations happen in daytime clinic hours. An infant vaccinated midday who dies in the following night's sleep is found the next morning — the day <em>after</em> the shot — with no biology required. Miller's rebuttal only excludes the narrow case where bias peaks on the calendar day-of; it does not exclude a "soon-after" reporting window or the morning-discovery pattern, both of which produce his day-2 peak.</div></div>
+      <div class="card"><div class="t">2 · The age confound survives it entirely</div><div class="note">Incubation is an hours-to-days claim. The age data is a <strong>months-scale</strong> fact: 85.8% of these deaths are SIDS-aged (&lt;6 months) and the 2/4/6-month schedule sits on the SIDS peak. Granting a day-2 peak says nothing about why the deaths concentrate at the exact ages SIDS already owns. (See the v2 tab.)</div></div>
+      <div class="card"><div class="t">3 · His denominator stance is unfalsifiable</div><div class="note">Miller wrote that even if observed deaths equalled expected, <em>"this would not be evidence that specific deaths occurring post-vaccination are not causally related."</em> A hypothesis that a null result cannot disconfirm is not a testable safety signal. His "expected" is also just the reported deaths spread uniformly over 60 days — an internal strawman, not a population baseline.</div></div>
+    </div>
+    <p class="note" style="margin-top:10px"><strong>The honest verdict is unchanged.</strong> VAERS can <em>generate</em> this hypothesis; only a denominated cohort or a self-controlled case series can <em>test</em> it. Miller's strongest argument, fully granted, narrows the reporting-bias explanation but does not reach the age confound or supply the denominator — so the causal claim remains unsupported, and so would any confident claim of safety. <em>Removal of the paper still owes the same transparency it failed to give.</em></p>
+  </section>
+
   <!-- QUERY CORPUS -->
   <section id="corpus">
     <h2>Query the corpus</h2>
@@ -192,7 +213,7 @@ const RECORDS = [
 ];
 
 // ---------- nav ----------
-const TABS=[["how","HOW · sample pull"],["oe","v2 · Observed vs Expected"],["overview","Overview"],["corpus","Query corpus"],["mech","Mechanism crossroads"],["reshape","Reshape question"],["notin","Not in corpus?"],["verify","Verify (SHA-256)"]];
+const TABS=[["how","HOW · sample pull"],["oe","v2 · Observed vs Expected"],["miller","Miller's case (steelman)"],["overview","Overview"],["corpus","Query corpus"],["mech","Mechanism crossroads"],["reshape","Reshape question"],["notin","Not in corpus?"],["verify","Verify (SHA-256)"]];
 const nav=document.getElementById('nav');
 TABS.forEach(([id,lab],i)=>{const b=document.createElement('button');b.textContent=lab;b.dataset.id=id;if(i===0)b.classList.add('active');b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')};nav.appendChild(b)});
 

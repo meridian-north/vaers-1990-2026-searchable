@@ -13,6 +13,8 @@ A claim-navigator, not a claim-engine.
 | File | What it is |
 |------|------------|
 | `STUDY_6axis_kennedy_miller_vaers.md` | The six-axis study — the substantive centerpiece |
+| `MILLER_STEELMAN.md` | Miller's actual argument from the primary source + fair rebuttal (contested ≠ dismissed) |
+| `V2_observed_vs_expected.md` | The age-confound analysis (v2) |
 | `kennedy_miller_vaers_review.html` | Self-contained interactive webform (open in any browser) |
 | `OUTREACH_reply_seckennedy.md` | Short/threaded public reply drafts for the @SecKennedy thread |
 | `data/case_records_v2.csv` | Case-records corpus, v2 literature-index schema, embedded caveats |

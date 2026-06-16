@@ -19,6 +19,9 @@ if [ ! -f kennedy-miller-kit/kennedy_miller_vaers_review.html ]; then
   echo "✗ kennedy-miller-kit/ not found in repo — re-copy it first." ; exit 1
 fi
 
+# 2b. remove any stray nested copy left by a sandbox sync (delete is blocked in-sandbox)
+[ -d kennedy-miller-kit/kennedy-miller-vaers-kit ] && rm -rf kennedy-miller-kit/kennedy-miller-vaers-kit && echo "→ removed stray nested kennedy-miller-vaers-kit/"
+
 # 3. verify the kit's own manifest before publishing
 ( cd kennedy-miller-kit && grep -v '^#' MANIFEST_SHA256.txt | shasum -a 256 -c ) \
   && echo "→ kit MANIFEST_SHA256 verified"
