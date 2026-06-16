@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kennedy–Miller VAERS Review · Meridian North Corpus</title>
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#121922; --panel2:#0e151d; --ink:#e6edf3; --mut:#8aa0b4;
+    --line:#1f2b38; --acc:#5eb1ff; --accd:#1c5fa8;
+    --warn:#ff5d5d; --caution:#ffb454; --watch:#ffe066; --low:#5ad19a; --lore:#b18cff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  header{padding:22px 22px 10px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0e151d,#0b0f14)}
+  h1{margin:0 0 4px;font-size:20px;letter-spacing:.2px}
+  .sub{color:var(--mut);font-size:13px}
+  .caveat{margin-top:10px;padding:8px 12px;border:1px solid var(--accd);border-radius:8px;background:#0d1a2a;color:#bcd6f2;font-size:12.5px}
+  nav{display:flex;flex-wrap:wrap;gap:6px;padding:12px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+  nav button{background:var(--panel);color:var(--ink);border:1px solid var(--line);padding:8px 13px;border-radius:999px;cursor:pointer;font-size:13px}
+  nav button.active{background:var(--accd);border-color:var(--acc);color:#fff}
+  main{padding:20px 22px;max-width:1040px}
+  section{display:none} section.active{display:block}
+  h2{font-size:16px;margin:0 0 6px;color:var(--acc)}
+  h3{font-size:13.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;margin:18px 0 6px}
+  p{margin:8px 0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px;margin-top:10px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px}
+  .card .t{font-size:13.5px;font-weight:600;margin-bottom:4px}
+  .meta{font-size:11.5px;color:var(--mut);margin:2px 0}
+  .tag{display:inline-block;font-size:10.5px;padding:2px 7px;border-radius:5px;border:1px solid var(--line);margin:2px 3px 0 0;color:var(--mut)}
+  .sig{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:5px;color:#0b0f14}
+  .sig.WARN{background:var(--warn)} .sig.CAUTION{background:var(--caution)} .sig.WATCH{background:var(--watch)} .sig.LOW{background:var(--low)} .sig.LORE{background:var(--lore)}
+  .src{font-size:11px;color:var(--mut);font-family:ui-monospace,Menlo,monospace;word-break:break-all}
+  a{color:var(--acc)}
+  table{border-collapse:collapse;width:100%;font-size:13px;margin:8px 0}
+  th,td{border:1px solid var(--line);padding:6px 9px;text-align:right} th:first-child,td:first-child{text-align:left}
+  th{background:var(--panel2);color:var(--mut);font-weight:600}
+  .chartwrap{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:10px;overflow-x:auto}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mut);margin:6px 0 2px}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+  .note{font-size:12.5px;color:var(--mut)}
+  input,select,textarea{background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:8px;font-size:13px}
+  textarea{width:100%;min-height:90px;font-family:ui-monospace,Menlo,monospace}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+  button.act{background:var(--accd);border:1px solid var(--acc);color:#fff;border-radius:7px;padding:8px 14px;cursor:pointer}
+  .mono{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+  .ok{color:var(--low)} .bad{color:var(--warn)}
+  .pill{font-size:11px;border:1px solid var(--line);border-radius:999px;padding:2px 9px;color:var(--mut)}
+  .big{font-size:26px;font-weight:700}
+  footer{padding:18px 22px;color:var(--mut);font-size:11.5px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Kennedy–Miller VAERS Review <span class="pill">Meridian North · six-axis corpus · v2</span></h1>
+  <div class="sub">A claim-navigator for the removal of Miller (2021) "Vaccines and sudden infant death" from <em>Toxicology Reports</em>. Neutral on safety · strong on method · method fully open.</div>
+  <div class="caveat" id="globalCaveat">passive surveillance — reports are unverified — a report is not causation — reporting rates are not incidence rates — days-to-onset reflects reporting behaviour, not a hazard window</div>
+</header>
+
+<nav id="nav"></nav>
+<main>
+  <!-- OVERVIEW / WHO-WHAT -->
+  <section id="overview">
+    <h2>The case in one screen</h2>
+    <p>On 2026-05-26 Elsevier removed Neil Z. Miller's 2021 paper, which read a clustering of infant deaths in the days after vaccination (VAERS, 1990–2019) as a vaccine–SIDS signal. On 2026-06-11 Secretary Kennedy demanded a transparent account of that removal. This corpus holds <strong>both</strong> contested objects — the paper and the manner of its erasure — graded, caveated, and traceable.</p>
+    <div class="row">
+      <div class="card" style="flex:1;min-width:200px"><div class="meta">CENTRAL METHOD FACT</div><div class="big">No denominator</div><div class="note">VAERS has no count of vaccinated infants who did <em>not</em> die. A count of deaths-after-shots cannot become a rate, so it cannot be compared to background mortality.</div></div>
+      <div class="card" style="flex:1;min-width:200px"><div class="meta">HHS OWN DATA GUIDE</div><div class="big">Stimulated reporting</div><div class="note">"…more serious and unexpected medical events are probably more likely to be reported…especially when they occur soon after vaccination, even if they may be coincidental."</div></div>
+    </div>
+    <h3>The two questions, kept separate</h3>
+    <p><strong>Did Miller's inference fail as method?</strong> Yes — causal inference from denominator-free passive data with a built-in temporal bias. <strong>Should the removal still be scrutinised?</strong> Also yes — a two-sentence notice that asserts a flaw without showing the analysis, the reviewers, or their conflicts fails the COPE "state your reasons" standard. The same transparency principle generates both positions; they do not conflict.</p>
+  </section>
+
+  <!-- HOW : the sample pull -->
+  <section id="how" class="active">
+    <h2>HOW — the days-to-onset sample pull</h2>
+    <p>We ran Miller's own metric — share of reports whose onset falls in the first days after vaccination — on the full Meridian North VAERS corpus (1990–2026, n=1,989,028) and put the fatal-infant slice <strong>side by side with controls</strong>. If the clustering also appears where a death-hazard window is implausible, the cluster is an artifact of <em>reporting</em>, not a fingerprint of <em>harm</em>.</p>
+    <div class="chartwrap">
+      <div class="legend" id="legend"></div>
+      <div id="chart"></div>
+      <div class="note" id="chartNote"></div>
+    </div>
+    <table id="summaryTable"></table>
+    <p class="note">Read the rows together: the clustering is <strong>not</strong> strongest in the fatal-infant slice the SIDS argument needs — it is stronger in the all-infant population (mostly non-fatal, no death-hazard window) and strong across the entire database. A causal hazard cannot explain why trivial non-fatal reports cluster harder against the shot date than infant deaths do. Reporting behaviour can. The adult-death control is least clustered, with a long multi-month tail — same instrument, same metric, opposite shape, driven by who files and when.</p>
+    <p class="note"><strong>Symmetry:</strong> this table also cannot prove vaccines are <em>safe</em> for infants. It proves only that this instrument cannot adjudicate the causal question in either direction. That belongs to a design with a real denominator and matched ascertainment.</p>
+    <div class="card" style="margin-top:12px;border-color:var(--caution)">
+      <div class="t">Read-the-chart caveats (so the figure isn't itself misused)</div>
+      <div class="note"><strong>Bin width is uneven.</strong> Days 0–7 are one-day bins; 8–14, 15–30, 31–90, 91+ are wider. So a single cohort's bar heights are <em>not</em> a per-day hazard curve — the wide late bins accumulate many days. The valid read here is the <strong>comparison across cohorts within the same bins</strong>, which is width-invariant: every series shares identical bins, so the fact that non-fatal infant reports cluster harder at day 0–2 than infant deaths cannot be a bin-width effect.</div>
+      <div class="note" style="margin-top:6px"><strong>Day-0 heaping.</strong> Day-0 mixes genuinely same-day onset with date-coarsening (same-day minor reactions, and any record where onset was entered as the vaccination date). Note the shape difference this produces: all-infant <em>reports</em> peak hardest at day 0 (the same-day-reaction signature), while infant <em>deaths</em> peak at day 1, not day 0 — consistent with "found unresponsive the next morning," which is also when background SIDS peaks regardless of vaccination.</div>
+      <div class="note" style="margin-top:6px"><strong>What would turn this into a finding:</strong> observed-vs-expected against background infant mortality by exact day of age, a denominated comparator (unvaccinated / differently-scheduled), and replication in active-surveillance linked data (VSD/BEST). None are visible in spontaneous-report timing alone. <em>Hypothesis-generation, not causation.</em></div>
+    </div>
+  </section>
+
+  <!-- V2: OBSERVED vs EXPECTED -->
+  <section id="oe">
+    <h2>v2 — Observed vs Expected: the age confound</h2>
+    <div class="caveat" style="border-color:var(--low);background:#0c1f17;color:#bdead7;font-size:14px;margin-bottom:12px">
+      <strong>In plain language:</strong> these babies died at the ages when SIDS naturally peaks — which is also when the shots are scheduled. Timing alone cannot separate "the vaccine caused it" from "a SIDS-aged death that followed the visit the calendar put there." That is a statement about what this data <em>can't</em> show, not a claim that vaccines are safe or unsafe.
+    </div>
+    <p>The day-to-onset chart shows <em>when deaths are reported relative to the shot</em>. This panel asks the deeper question three independent reviews all pointed to: <strong>at what age do these infants die?</strong> Because if the deaths fall at the ages where SIDS already peaks, then "deaths cluster after vaccination" may be nothing more than "vaccines are scheduled at the age when infants are most likely to die of SIDS anyway."</p>
+    <div class="chartwrap">
+      <div id="ageChart"></div>
+      <div class="note" id="ageNote"></div>
+    </div>
+    <p class="note"><strong>The confound, in one sentence.</strong> The US primary vaccine series is given at <strong>2, 4, and 6 months</strong>. Background SIDS peaks at <strong>2–4 months</strong>, with ~90–95% of cases before 6 months (NICHD/CDC). In this corpus, <strong>85.8%</strong> of infant deaths occur before 6 months and <strong>74.5%</strong> fall in the 2–5 month window — the deaths are <em>SIDS-aged</em>, sitting exactly on top of the schedule. The vaccination calendar and the natural SIDS curve are <strong>confounded by design</strong>: you cannot separate them with timing data alone, because they point at the same months.</p>
+    <p class="note"><strong>Read it honestly, both ways.</strong> That the deaths are SIDS-aged does <em>not</em> prove vaccines are innocent — a real effect could hide inside the same window. And the fact that this corpus is even <em>more</em> peaked at 2–3 months than background SIDS is <em>not</em> a 2× "excess": VAERS has no denominator, and the 2-month visit is the single densest, most-reported vaccination event, so reporting concentrates there. Same lesson as v1: timing and age both coincide with the schedule, so neither can adjudicate cause.</p>
+    <h3>What an "expected" actually requires</h3>
+    <p class="note">A true observed-vs-expected needs the one thing VAERS structurally lacks — a <strong>vaccinated denominator by exact day of age</strong> — so deaths-after-vaccination can be compared to background mortality <em>at that age</em>. The design that gets there without a population denominator is the <strong>self-controlled case series</strong> (each infant is their own control; risk windows vs control windows within the same child). That is where this question is answerable. It is not answerable in spontaneous-report timing, in either direction.</p>
+    <h3>Bin-width-corrected onset (per-day rate)</h3>
+    <p class="note">Addressing the uneven-bin critique: dividing each bucket by its width gives a per-day rate. Infant deaths peak at <strong>day 1 (28.7%/day)</strong>, not day 0 — consistent with "found the next morning." All-reports peak at day 0 (47.2%/day) — the same-day minor-reaction reporting signature. The cross-cohort comparison from v1 is unchanged, because every cohort shares the same bins. Full table in <span class="mono">data/onset_perday_normalized_v2.csv</span>.</p>
+  </section>
+
+  <!-- QUERY CORPUS -->
+  <section id="corpus">
+    <h2>Query the corpus</h2>
+    <div class="row">
+      <input id="q" placeholder="grep title / mechanism / cohort…" style="flex:1;min-width:220px">
+      <select id="fSig"><option value="">all signals</option><option>WARN</option><option>CAUTION</option><option>WATCH</option><option>LOW</option><option>LORE</option></select>
+      <select id="fClass"><option value="">all source classes</option></select>
+    </div>
+    <div class="grid" id="cards"></div>
+  </section>
+
+  <!-- MECHANISM CROSSROADS -->
+  <section id="mech">
+    <h2>Mechanism crossroads</h2>
+    <p class="note">Co-occurrence of mechanism nodes across the indexed records. The dense node is exactly the methodological fault line.</p>
+    <div id="mechList"></div>
+  </section>
+
+  <!-- RESHAPE QUESTION -->
+  <section id="reshape">
+    <h2>Reshape a question</h2>
+    <p class="note">Turn a lay question into a clinician query, a research string, and a guard-railed LLM prompt.</p>
+    <textarea id="rqIn">Do vaccines cause SIDS?</textarea>
+    <div class="row"><button class="act" onclick="reshape()">Reshape</button></div>
+    <div id="rqOut"></div>
+  </section>
+
+  <!-- NOT IN CORPUS -->
+  <section id="notin">
+    <h2>Not in corpus?</h2>
+    <p class="note">Two paths when a query has no hit: a deeper index sweep, or a portable guard-railed prompt you can carry to any LLM.</p>
+    <div class="card"><div class="t">Path A — deeper sweep</div><div class="note">Expand to the full VAERS 1990–2026 strand corpus and the cross-system disproportionality diagnostics (labeled reporting-behaviour, never risk). Name the gap explicitly; absence of a field is a blind spot, not a negative finding.</div></div>
+    <div class="card" style="margin-top:10px"><div class="t">Path B — guard-railed LLM prompt</div><textarea id="guard" readonly></textarea><button class="act" onclick="copyGuard()">Copy prompt</button></div>
+  </section>
+
+  <!-- VERIFY -->
+  <section id="verify">
+    <h2>SHA-256 verifier</h2>
+    <p class="note">Milspec replayability: paste a file's text (or load it) and confirm its hash against the corpus MANIFEST. Computation runs locally in your browser via SubtleCrypto.</p>
+    <div class="row"><input type="file" id="file"></div>
+    <p class="note">…or paste text:</p>
+    <textarea id="vtext" placeholder="paste corpus text to hash"></textarea>
+    <div class="row"><button class="act" onclick="hashText()">Compute SHA-256</button><span class="mono" id="hashOut"></span></div>
+    <p class="note">Expected hashes are published in <span class="mono">MANIFEST_SHA256.txt</span> shipped alongside this webform.</p>
+  </section>
+</main>
+<footer>
+  Leads, not verdicts. Not medical advice. Retracted ≠ deleted · Contested ≠ dismissed · Lore ≠ evidence.
+  Corpus: meridian-north pharmacovigilance · VAERS 1990–2026 (n=1,989,028) · Text CC BY 4.0 · Code Apache-2.0.
+  <br>Sensitive-data note: this concerns infant death and reproduces no PII; counts are a floor, not a denominator. If this topic touches you personally, questions about a specific child's care belong with a trusted clinician.
+</footer>
+
+<script>
+// ---------- embedded data (traceable to ./data/*.csv) ----------
+const DOO = {
+ cohorts:[
+  {k:"infant_lt1_death", label:"Infant <1yr, died (Miller-style slice)", n:2941, onset:2638, color:"#ff5d5d",
+   hist:{ "0":374,"1":756,"2":328,"3":236,"4":133,"5":99,"6":104,"7":51,"8-14":233,"15-30":204,"31-90":95,"91+":25 }},
+  {k:"infant_lt1_all", label:"Infant <1yr, ALL reports (mostly non-fatal)", n:69911, onset:62365, color:"#ffb454",
+   hist:{ "0":37604,"1":11079,"2":3373,"3":1755,"4":1064,"5":781,"6":649,"7":596,"8-14":1638,"15-30":1306,"31-90":1343,"91+":1177 }},
+  {k:"adult_18_65_death", label:"Adult 18–64, died (control)", n:5075, onset:4662, color:"#5eb1ff",
+   hist:{ "0":516,"1":519,"2":253,"3":151,"4":124,"5":115,"6":74,"7":93,"8-14":424,"15-30":424,"31-90":432,"91+":1537 }},
+  {k:"all_reports", label:"All VAERS reports 1990–2026 (baseline)", n:1989028, onset:1647504, color:"#5ad19a",
+   hist:{ "0":777928,"1":314781,"2":92657,"3":43444,"4":26093,"5":20841,"6":18371,"7":30657,"8-14":88632,"15-30":62751,"31-90":56414,"91+":114935 }}
+ ],
+ order:["0","1","2","3","4","5","6","7","8-14","15-30","31-90","91+"]
+};
+// v2: age-of-death distribution of infant (<1yr) VAERS deaths (n=2,941)
+const AGE = {n:2941, pct:[3.0,7.0,44.0,19.4,11.1,1.3,7.4,2.6,1.1,2.0,1.0,0.2], sidsWindow:[2,5]};
+const RECORDS = [
+ {id:"kmv-001",sig:"WARN",t:"Miller NZ — Vaccines and sudden infant death: VAERS 1990–2019 + literature review",journal:"Toxicology Reports",year:2021,cls:"retracted",ident:"10.1016/j.toxrep.2021.06.020",idk:"doi",mech:["passive_surveillance","temporal_reporting_bias","denominator_absence","causation_inference","stimulated_reporting"],cohorts:["SIDS","infant_death"],link:"https://doi.org/10.1016/j.toxrep.2021.06.020",cav:"retracted_retained_not_deleted; correlation_is_not_causation; passive_surveillance_no_denominator; temporal_clustering_is_a_reporting_artifact; pmid_34258234"},
+ {id:"kmv-002",sig:"CAUTION",t:"Retraction notice — Miller article (Toxicology Reports)",journal:"Toxicology Reports",year:2026,cls:"retraction_notice",ident:"S2214750026000521",idk:"pii",mech:["retraction_ethics","editorial_transparency","methodology_critique"],cohorts:["SIDS","infant_death"],link:"https://www.sciencedirect.com/science/article/pii/S2214750026000521",cav:"two_sentence_notice_disputed; COPE_requires_stated_reason; states_conclusions_not_supported_by_methodology"},
+ {id:"kmv-003",sig:"LOW",t:"Wager E et al — Retractions: guidance from COPE",journal:"Croatian Medical Journal",year:2009,cls:"guidance",ident:"20017220",idk:"pmid",mech:["retraction_ethics","editorial_transparency"],cohorts:["na"],link:"https://pubmed.ncbi.nlm.nih.gov/20017220/",cav:"notice_of_retraction_should_state_reasons; doi_10.3325/cmj.2009.50.532"},
+ {id:"kmv-004",sig:"WATCH",t:"Werne & Garrow — Fatal anaphylaxis in identical twins after DTP (2nd injection)",journal:"JAMA",year:1946,cls:"observational",ident:"20987418",idk:"pmid",mech:["anaphylaxis","temporal_association"],cohorts:["infant_death","twins"],link:"https://pubmed.ncbi.nlm.nih.gov/20987418/",cav:"historical_case_report_n2; cited_as_corroborating_lit_by_kmv-001; correlation_is_not_causation"},
+ {id:"kmv-005",sig:"WATCH",t:"Matturri et al — SIDS following hexavalent vaccination: neuropathologic study",journal:"Current Medicinal Chemistry",year:2014,cls:"observational",ident:"24083600",idk:"pmid",mech:["neuropathology","brainstem","temporal_association"],cohorts:["SIDS","infant_death"],link:"https://pubmed.ncbi.nlm.nih.gov/24083600/",cav:"single_case_neuropathologic_study; mechanistic_hypothesis; correlation_is_not_causation"},
+ {id:"kmv-006",sig:"LOW",t:"HHS VAERS Data Use Guide — stimulated/temporal reporting note",journal:"HHS / CDC / FDA",year:2026,cls:"gov_methodology",ident:"vaers.hhs.gov/data/dataguide.html",idk:"url",mech:["passive_surveillance","stimulated_reporting","temporal_reporting_bias","denominator_absence","underreporting"],cohorts:["na"],link:"https://vaers.hhs.gov/data/dataguide.html",cav:"keystone_methodology_source; serious_unexpected_events_more_likely_reported_soon_after_vaccination_even_if_coincidental; reporting_rates_are_not_incidence_rates"},
+ {id:"kmv-007",sig:"CAUTION",t:"Kennedy RF Jr → Lash LH — letter re removal of Miller article",journal:"HHS Office of the Secretary",year:2026,cls:"official_correspondence",ident:"HHS-SEC-2026-06-11",idk:"doc",mech:["editorial_transparency","retraction_ethics","research_integrity"],cohorts:["SIDS","infant_death"],link:"https://x.com/SecKennedy",cav:"primary_correspondence_not_peer_reviewed_evidence; demands_transparency_on_removal; response_requested_by_2026-06-25"},
+ {id:"kmv-008",sig:"LOW",t:"VAERS days-to-onset — infant vs control sample pull (this kit)",journal:"meridian-north pharmacovigilance",year:2026,cls:"gov_methodology",ident:"doo_distribution_sample.csv",idk:"dataset",mech:["passive_surveillance","temporal_reporting_bias","stimulated_reporting","denominator_absence"],cohorts:["SIDS","infant_death","control"],link:"./data/doo_distribution_sample.csv",cav:"clustering_present_in_ALL_cohorts_incl_nonfatal_and_baseline; tracks_reporting_behaviour_not_a_hazard_window; no_denominator; a_report_is_not_causation"}
+];
+
+// ---------- nav ----------
+const TABS=[["how","HOW · sample pull"],["oe","v2 · Observed vs Expected"],["overview","Overview"],["corpus","Query corpus"],["mech","Mechanism crossroads"],["reshape","Reshape question"],["notin","Not in corpus?"],["verify","Verify (SHA-256)"]];
+const nav=document.getElementById('nav');
+TABS.forEach(([id,lab],i)=>{const b=document.createElement('button');b.textContent=lab;b.dataset.id=id;if(i===0)b.classList.add('active');b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')};nav.appendChild(b)});
+
+// ---------- chart (grouped bars, pure SVG) ----------
+function pct(c,b){return 100*c.hist[b]/c.onset}
+function drawChart(){
+  const W=Math.max(760,DOO.order.length*60), H=300, padL=38,padB=46,padT=10;
+  const max=24; // y axis max % per bucket-cohort
+  const bw=(W-padL-10)/DOO.order.length, gw=bw/(DOO.cohorts.length+0.6);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`;
+  for(let y=0;y<=max;y+=4){const yy=padT+(H-padT-padB)*(1-y/max);s+=`<line x1="${padL}" y1="${yy}" x2="${W-6}" y2="${yy}" stroke="#1f2b38"/><text x="4" y="${yy+3}" fill="#8aa0b4" font-size="9">${y}%</text>`}
+  DOO.order.forEach((b,bi)=>{
+    const x0=padL+bi*bw;
+    DOO.cohorts.forEach((c,ci)=>{
+      const v=Math.min(pct(c,b),max), h=(H-padT-padB)*(v/max);
+      const x=x0+ci*gw+4, y=padT+(H-padT-padB)-h;
+      s+=`<rect x="${x}" y="${y}" width="${gw-1.5}" height="${h}" fill="${c.color}"><title>${c.label} · day ${b}: ${pct(c,b).toFixed(1)}%</title></rect>`;
+    });
+    s+=`<text x="${x0+bw/2}" y="${H-padB+14}" fill="#8aa0b4" font-size="9" text-anchor="middle">${b}</text>`;
+  });
+  s+=`<text x="${padL+ (W-padL)/2}" y="${H-6}" fill="#8aa0b4" font-size="10" text-anchor="middle">days from vaccination to symptom onset →</text></svg>`;
+  document.getElementById('chart').innerHTML=s;
+  document.getElementById('legend').innerHTML=DOO.cohorts.map(c=>`<span><i style="background:${c.color}"></i>${c.label}</span>`).join('');
+  document.getElementById('chartNote').textContent="Bars clipped at 24% for scale; day-0 of the all-infant and baseline cohorts run higher (hover for exact values).";
+}
+function summaryTable(){
+  let h="<tr><th>Cohort</th><th>n cohort</th><th>n w/ onset</th><th>Day 0–2</th><th>Day 0–3</th></tr>";
+  DOO.cohorts.forEach(c=>{const d02=pct(c,"0")+pct(c,"1")+pct(c,"2");const d03=d02+pct(c,"3");
+    h+=`<tr><td>${c.label}</td><td>${c.n.toLocaleString()}</td><td>${c.onset.toLocaleString()}</td><td><b>${d02.toFixed(1)}%</b></td><td><b>${d03.toFixed(1)}%</b></td></tr>`});
+  document.getElementById('summaryTable').innerHTML=h;
+}
+
+// ---------- v2 age-of-death chart ----------
+function drawAge(){
+  const W=760,H=300,padL=38,padB=46,padT=12,max=48;
+  const bw=(W-padL-10)/12;
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`;
+  // SIDS window band (months 2-5)
+  const bx=padL+AGE.sidsWindow[0]*bw, bw2=(AGE.sidsWindow[1]-AGE.sidsWindow[0])*bw;
+  s+=`<rect x="${bx}" y="${padT}" width="${bw2}" height="${H-padT-padB}" fill="#5eb1ff" opacity="0.10"/>`;
+  s+=`<text x="${bx+bw2/2}" y="${padT+12}" fill="#9cc7f5" font-size="10" text-anchor="middle">background SIDS peak · vaccine schedule 2/4/6mo</text>`;
+  for(let y=0;y<=max;y+=8){const yy=padT+(H-padT-padB)*(1-y/max);s+=`<line x1="${padL}" y1="${yy}" x2="${W-6}" y2="${yy}" stroke="#1f2b38"/><text x="4" y="${yy+3}" fill="#8aa0b4" font-size="9">${y}%</text>`}
+  AGE.pct.forEach((v,m)=>{
+    const h=(H-padT-padB)*(Math.min(v,max)/max), x=padL+m*bw+5, y=padT+(H-padT-padB)-h;
+    const inWin = m>=AGE.sidsWindow[0]&&m<AGE.sidsWindow[1];
+    s+=`<rect x="${x}" y="${y}" width="${bw-9}" height="${h}" fill="${inWin?'#ff5d5d':'#7a8aa0'}"><title>${m}-${m+1} months: ${v}% of infant deaths</title></rect>`;
+    s+=`<text x="${x+(bw-9)/2}" y="${H-padB+14}" fill="#8aa0b4" font-size="8.5" text-anchor="middle">${m}</text>`;
+  });
+  s+=`<text x="${padL+(W-padL)/2}" y="${H-6}" fill="#8aa0b4" font-size="10" text-anchor="middle">age of death, months →</text></svg>`;
+  document.getElementById('ageChart').innerHTML=s;
+  document.getElementById('ageNote').textContent="VAERS infant deaths (<1yr, n=2,941) by age. Red = inside the 2–5mo SIDS/schedule window (74.5% of deaths). Hover for values.";
+}
+
+// ---------- corpus cards ----------
+function renderCards(){
+  const q=(document.getElementById('q').value||'').toLowerCase();
+  const fs=document.getElementById('fSig').value, fc=document.getElementById('fClass').value;
+  const box=document.getElementById('cards');box.innerHTML='';
+  RECORDS.filter(r=>{
+    const hay=(r.t+' '+r.mech.join(' ')+' '+r.cohorts.join(' ')+' '+r.cls).toLowerCase();
+    return (!q||hay.includes(q))&&(!fs||r.sig===fs)&&(!fc||r.cls===fc);
+  }).forEach(r=>{
+    const c=document.createElement('div');c.className='card';
+    c.innerHTML=`<div><span class="sig ${r.sig}">${r.sig}</span> <span class="pill">${r.cls}</span></div>
+      <div class="t" style="margin-top:6px">${r.t}</div>
+      <div class="meta">${r.journal} · ${r.year}</div>
+      <div class="src">${r.idk}:${r.ident}</div>
+      <div style="margin-top:6px">${r.mech.map(m=>`<span class="tag">${m}</span>`).join('')}</div>
+      <div class="meta" style="margin-top:6px">caveat: ${r.cav}</div>
+      <div style="margin-top:6px"><a href="${r.link}" target="_blank" rel="noopener">source ↗</a></div>`;
+    box.appendChild(c);
+  });
+  if(!box.children.length){box.innerHTML='<div class="note">No corpus hit. Use the <b>Not in corpus?</b> tab — name the gap, then take the guard-railed prompt.</div>';}
+}
+
+// ---------- mechanism crossroads ----------
+function mechCross(){
+  const cnt={};RECORDS.forEach(r=>r.mech.forEach(m=>cnt[m]=(cnt[m]||0)+1));
+  const arr=Object.entries(cnt).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('mechList').innerHTML='<div class="grid">'+arr.map(([m,n])=>`<div class="card"><div class="t">${m}</div><div class="big">${n}</div><div class="note">records</div></div>`).join('')+'</div>';
+}
+
+// ---------- reshape ----------
+function reshape(){
+  const inp=document.getElementById('rqIn').value.trim();
+  document.getElementById('rqOut').innerHTML=`
+  <div class="card" style="margin-top:10px"><div class="t">Clinician query</div><div class="note">In infants, is there a controlled, denominated study (cohort or self-controlled case series) testing an association between recent vaccination and SIDS — not a spontaneous-report count?</div></div>
+  <div class="card" style="margin-top:8px"><div class="t">Research string</div><div class="mono">(SIDS OR "sudden infant death") AND vaccin* AND (cohort OR "self-controlled case series" OR "case-control") NOT (VAERS AND NOT denominator)</div></div>
+  <div class="card" style="margin-top:8px"><div class="t">Guard-railed LLM prompt</div><div class="note mono">${guardText(inp)}</div></div>`;
+}
+function guardText(q){
+  return `Question: ${q||'[your question]'}
+Rules for your answer:
+1) Grade the evidence explicitly (RCT > cohort/SCCS > observational > preclinical > review > spontaneous-report > lore).
+2) Treat VAERS/passive-surveillance clustering as a REPORTING signal, never as causation; flag the missing denominator.
+3) Name the gaps honestly; absence of a field is a blind spot, not a negative finding.
+4) Do not overclaim efficacy OR safety; passive data cannot prove either direction.
+5) Do not dismiss traditional/anecdotal reports — label them as lore, not evidence.
+6) State what your training data may miss (cutoff, incompleteness).
+7) Flag what the user should bring to a clinician.`;
+}
+function copyGuard(){navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('guard').value);}
+
+// ---------- verify ----------
+async function sha256(buf){const h=await crypto.subtle.digest('SHA-256',buf);return [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function hashText(){const t=document.getElementById('vtext').value;const out=await sha256(new TextEncoder().encode(t));document.getElementById('hashOut').textContent=out;}
+document.getElementById('file').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;const out=await sha256(await f.arrayBuffer());document.getElementById('hashOut').textContent=f.name+'  '+out;});
+
+// ---------- init ----------
+const classes=[...new Set(RECORDS.map(r=>r.cls))];
+document.getElementById('fClass').insertAdjacentHTML('beforeend',classes.map(c=>`<option>${c}</option>`).join(''));
+['q','fSig','fClass'].forEach(id=>document.getElementById(id).addEventListener('input',renderCards));
+document.getElementById('guard').value=guardText('Do vaccines cause SIDS?');
+drawChart();summaryTable();drawAge();renderCards();mechCross();reshape();
+</script>
+</body>
+</html>
