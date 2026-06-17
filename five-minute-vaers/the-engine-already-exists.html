@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Engine Already Exists — automated vaccine-safety reporting was built, proven, and open-sourced</title>
+<meta name="description" content="The hard part of vaccine-safety reporting was built and proven on 1.4 million doses in 2011 (ESP:VAERS), then shelved. The underlying engine, ESP, is open-source and running across 60%+ of Massachusetts today. We don't need to invent it. We need to fork it.">
+<meta property="og:title" content="The Engine Already Exists">
+<meta property="og:description" content="Automated vaccine-safety reporting was built, proven on 1.4M doses, and open-sourced. The engine runs at scale today — just not pointed at VAERS. Fork it.">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary">
+<style>
+ :root{
+  --bg:#f4f2ec; --panel:#ffffff; --panel2:#efece4; --ink:#1e2630; --mut:#56616e;
+  --line:#d7d1c6; --acc:#345670; --accd:#284258; --warn:#a85a52; --low:#5e8468;
+  --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,"Times New Roman",serif;
+ }
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+ .wrap{max-width:48rem;margin:0 auto;padding:40px 24px 80px}
+ .kicker{color:var(--mut);font-size:14px;letter-spacing:1px;text-transform:uppercase;font-weight:700}
+ h1{font-family:var(--serif);font-size:38px;line-height:1.15;font-weight:600;margin:8px 0 10px}
+ .lede{font-size:21px;color:#2c3742;margin:0 0 8px}
+ .by{color:var(--mut);font-size:15px;margin-bottom:8px}
+ h2{font-family:var(--serif);font-size:25px;margin:34px 0 8px;line-height:1.25}
+ h3{font-size:16px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);margin:22px 0 4px}
+ p{margin:14px 0;max-width:42em}
+ strong{font-weight:700}
+ a{color:var(--acc);text-underline-offset:2px}
+ ul{max-width:42em} li{margin:7px 0}
+ .pull{font-family:var(--serif);font-size:23px;line-height:1.35;color:var(--accd);
+  border-left:5px solid var(--acc);padding:6px 0 6px 18px;margin:24px 0}
+ .box{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:20px 22px;margin:22px 0}
+ .box.act{border-left:6px solid var(--low);background:#eaf1ec}
+ .box .t{font-family:var(--serif);font-size:21px;font-weight:600;margin-bottom:6px;color:#2c4a39}
+ .btn{display:inline-block;background:var(--accd);color:#fff;text-decoration:none;border-radius:7px;
+  padding:11px 18px;font-weight:600;margin:8px 10px 4px 0}
+ .btn.alt{background:var(--panel);color:var(--ink);border:1px solid var(--line)}
+ table{border-collapse:collapse;width:100%;font-size:15.5px;margin:14px 0}
+ th,td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+ th{background:var(--panel2);font-weight:700}
+ .note{font-size:15px;color:var(--mut)}
+ .src{font-size:14px;color:var(--mut)}
+ footer{border-top:2px solid var(--line);margin-top:36px;padding-top:18px;color:var(--mut);font-size:15px}
+</style></head><body>
+<div class="wrap">
+  <div class="kicker">Meridian North · Open Pharmacovigilance · White Paper</div>
+  <h1>The Engine Already Exists</h1>
+  <p class="lede">Automated vaccine-safety reporting was built, proven on 1.4 million doses, and open-sourced. The engine runs at scale today — just never pointed at VAERS. We don't need to invent it. We need to <strong>fork it</strong>.</p>
+  <div class="by">Neutral on safety · strong on method · the method is open, check it · 2026</div>
+
+  <div class="pull">Fewer than 1% of vaccine adverse events ever get reported. That is not a law of nature. It is a 30-minute form — and a fix that was shelved.</div>
+
+  <h2>1. The problem everyone treats as unsolvable</h2>
+  <p>The official VAERS form takes a clinician roughly <strong>30 minutes</strong> of manually re-typing information the electronic health record already holds in structured form. Predictably, <strong>fewer than 1%</strong> of vaccine adverse events are ever reported. The usual conclusion is that better safety surveillance is hard, expensive, or impossible. It is none of those things. It was built fifteen years ago.</p>
+
+  <h2>2. ESP — an open engine that reads the record and reports to public health</h2>
+  <p><strong>ESP (Electronic Support for Public Health)</strong> is an open-source platform that reads near-real-time EHR data — diagnoses, labs, prescriptions, vitals — and <strong>automatically detects and reports</strong> reportable conditions to public health authorities. It was built at the <strong>Department of Population Medicine, Harvard Pilgrim Health Care Institute</strong>, originally to automate the notifiable-disease reports clinicians are legally required to file and mostly don't.</p>
+  <p>This is not a prototype on a shelf. Today ESP is:</p>
+  <ul>
+    <li><strong>Open-source</strong> under a permissive BSD-3-Clause license — source on GitLab, with an implementation kit.</li>
+    <li><strong>Deployed across Massachusetts</strong> with the state Department of Public Health, <strong>covering 60%+ of the population</strong>.</li>
+    <li>Part of the <strong>CDC-funded MENDS</strong> multi-state disease-surveillance network.</li>
+  </ul>
+  <p>A maintained, deployed, government-networked engine already watches millions of records and files automated public-health reports every day. The "machine that reads the record and raises its hand" is real, and running.</p>
+
+  <h2>3. ESP:VAERS — the same engine, pointed at vaccine safety (2007–2011)</h2>
+  <p>With an <strong>AHRQ grant (R18 HS017045)</strong>, the same team extended ESP into <strong>ESP:VAERS</strong>. The method was simple and powerful: for <strong>every patient who received a vaccine</strong>, the system automatically watched the next <strong>30 days</strong> of their record for diagnoses, labs, and prescriptions suggestive of an adverse event — and when it flagged one, it <strong>auto-generated a pre-filled electronic VAERS report</strong> and could transmit it. No form. No 30 minutes. No reliance on memory.</p>
+  <p>It ran on <strong>real data: ~1.4 million doses of 45 vaccines given to 376,452 people</strong> (under IRB and data-use agreements — that individual-level data is protected and not public). What it proved:</p>
+  <ul>
+    <li>~<strong>2.6%</strong> of vaccinations were followed by a possible adverse event the system could flag automatically.</li>
+    <li>It confirmed that <strong>fewer than 1%</strong> of events reach VAERS today.</li>
+    <li><strong>Automated detection and electronic reporting from the EHR is feasible</strong> — the hard half of the problem, done.</li>
+  </ul>
+
+  <h2>4. What happened — and what didn't</h2>
+  <p>The planned evaluation comparing ESP:VAERS to existing systems could not proceed — by the project's <strong>own final report</strong>, <em>"due to restructuring at CDC and consequent delays in decision-making."</em> The vaccine-reporting capability was not carried to national adoption.</p>
+  <p class="note">To be precise and fair: that is the documented record, and we make no claim about intent. What is not in dispute is the outcome — a working, government-funded, automated vaccine-safety reporting system, proven on 1.4 million doses, was not deployed at national scale, while the engine underneath it went on to be open-sourced and deployed for <em>other</em> public-health reporting across an entire state.</p>
+
+  <h2>5. 2011 vs. today — what's actually missing</h2>
+  <table>
+    <tr><th>Layer</th><th>Status</th></tr>
+    <tr><td>Detection engine (read the record, flag the event)</td><td><strong>Built. Open-source. Running at scale</strong> (ESP, 60%+ of MA, CDC MENDS).</td></tr>
+    <tr><td>Vaccine adverse-event reporting capability</td><td><strong>Built &amp; proven</strong> on 1.4M doses (ESP:VAERS, 2011); not switched on nationally.</td></tr>
+    <tr><td>Legal permission</td><td><strong>Granted.</strong> VAERS reporting is a permitted public-health disclosure — 45 CFR 164.512(b); 42 U.S.C. 300aa-25. No patient authorization required.</td></tr>
+    <tr><td>Modern portability</td><td><strong>Available.</strong> FHIR / SMART-on-FHIR — vendor-neutral, app-runs-in-the-EHR — didn't exist in 2011; it does now.</td></tr>
+    <tr><td>Frictionless entry (the visible half)</td><td><strong>Demonstrated.</strong> Open 5-minute-VAERS proof of concept (synthetic data).</td></tr>
+    <tr><td>The connection</td><td><strong>This is the only missing piece.</strong></td></tr>
+  </table>
+
+  <div class="pull">The detection engine was built, proven on 1.4 million doses, open-sourced, and is running at scale for other diseases. It was simply never switched on for vaccine safety at national scale. Why not?</div>
+
+  <h2>6. The ask — fork the engine</h2>
+  <div class="box act">
+    <div class="t">This is not a moonshot. It is a merge.</div>
+    <p>We are not asking anyone to invent a solution. We are asking to <strong>connect the pieces that already exist, in the open</strong>:</p>
+    <ul>
+      <li><strong>Fork ESP</strong> (BSD-3, GitLab) — the open detection engine.</li>
+      <li><strong>Wrap it in modern FHIR / SMART-on-FHIR</strong> so it runs as an app inside today's EHRs, vendor-neutral.</li>
+      <li><strong>Connect the VAERS reporting it already has</strong> — turning a 30-minute form into automatic detection plus one-click confirm.</li>
+      <li><strong>Keep it open, hash-verified, and privacy-preserving</strong> — auditable by anyone; no one surrenders their identity to contribute.</li>
+      <li><strong>Pilot it</strong> in one willing clinic under the HIPAA public-health exception, then publish the result.</li>
+    </ul>
+    <p style="margin-bottom:4px">
+      <a class="btn" href="https://gitlab.com/ESP-Project/ESP">⑂ ESP source (GitLab)</a>
+      <a class="btn alt" href="https://www.esphealth.org/">ESP project</a>
+      <a class="btn alt" href="./">▶ 5-Minute VAERS demo</a>
+      <a class="btn alt" href="https://meridian-north.github.io/vaers-1990-2026-searchable/kennedy-miller-kit/kennedy_miller_vaers_review.html">The evidence corpus</a>
+    </p>
+  </div>
+
+  <p>Our open <strong>5-Minute VAERS</strong> demo rebuilds the <em>visible entry half</em> on modern standards so anyone can see how little it takes. ESP is the <em>detection half</em> — already built, open, and deployed. Put them together and you have the instrument the public has been told is impossible.</p>
+
+  <footer>
+    <p><strong>A navigator, not medical advice.</strong> This is a methods-and-history argument, not clinical guidance. Clinical decisions belong with a clinician.</p>
+    <p class="src"><strong>Sources:</strong> AHRQ ESP:VAERS project page &amp; final report (Lazarus, 2011) · "Automated Detection and Reporting of Vaccine Adverse Events: ESP-VAERS" · ESP / ESPHealth (esphealth.org · gitlab.com/ESP-Project/ESP) · MDPHnet &amp; CDC MENDS · "Harnessing electronic health records for public health surveillance." HIPAA public-health disclosure: 45 CFR 164.512(b); 42 U.S.C. 300aa-25.</p>
+    <p class="src">Open · Apache-2.0 (method) / CC BY 4.0 (text) · Part of the Meridian North / Garrison Node open pharmacovigilance effort.</p>
+  </footer>
+</div>
+</body></html>

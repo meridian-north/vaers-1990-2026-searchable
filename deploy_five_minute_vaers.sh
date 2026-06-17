@@ -20,7 +20,9 @@ done
 mkdir -p "$DEST"
 cp "$SRC/index.html" "$DEST/index.html"
 cp "$SRC/README.md"  "$DEST/README.md"
-echo "→ copied demo into $DEST"
+cp "$SRC/the-engine-already-exists.html" "$DEST/the-engine-already-exists.html"
+cp "$SRC/HISTORY_esp_vaers.md" "$DEST/HISTORY_esp_vaers.md"
+echo "→ copied demo + white paper into $DEST"
 
 git add five-minute-vaers deploy_five_minute_vaers.sh
 git commit -m "Publish 5-Minute VAERS demo (v0.1) — synthetic, open, HIPAA-permitted" || echo "→ nothing new to commit"
