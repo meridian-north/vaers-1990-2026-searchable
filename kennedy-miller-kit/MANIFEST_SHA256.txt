@@ -1,6 +1,6 @@
 # MANIFEST_SHA256 — Kennedy-Miller VAERS Review Kit (v2 + Miller steelman + kmv-011 SUID)
 # corpus: meridian-north pharmacovigilance · VAERS 1990-2026 (n=1,989,028)
-# generated: 2026-06-17T03:35:25Z · verify: grep -v '^#' MANIFEST_SHA256.txt | shasum -a 256 -c
+# generated: 2026-06-17T03:47:34Z · verify: grep -v '^#' MANIFEST_SHA256.txt | shasum -a 256 -c
 #
 e85b766c4dc68758411961ecf500baa06c5b67863938fbbcd070912148314b2c  .DS_Store
 5f59d9d4ee3a6c54674cb17edf4ce151661a370e983096e65964e123a1ba8cac  data/age_of_death_infant_v2.csv
@@ -10,7 +10,7 @@ b45566e1be1fdafef2c7e6f2c26d41b325d71a9cff2d3791fe300c4061935244  data/case_reco
 ba89fe10139cca7ef7fdee293c7dd9aaf88c24b827a4f102b6baef7cbfb05531  data/onset_perday_normalized_v2.csv
 ea21f66232e533cfd425e29791e7167237ab3886d073295f6bc008b02ede3aa6  data/suid_crossnational_ok_rows.csv
 992ba646a949251509afd55ae2f1b718830f60ec46c5ac01c2ca37fd1280ad39  DOCTRINE_sensor_sourced_reporting.md
-494870d3f667bd46372c7ceb4f9213df5d6553a128d35bb7e62d8681bd40be57  kennedy_miller_vaers_review.html
+64ecb64b2ab822dae59772c7eb755eb61be9f5be053af6715fc91662d6a13dcf  kennedy_miller_vaers_review.html
 96778eb127a331e0b34f9558234b2b69cd8d6cfd4efc3f856c5cdf196a2b4f80  miller_faithful_2panel.png
 997a35a7944d2a9ae22668ab787323919a10e4c51a2a531d0f41b4eb29cbdf3a  MILLER_STEELMAN.md
 b6e012ae934f85fb536afd3e89a57b62b85fdb33eeb8b7bfe03e53db2c8c5ef1  OUTREACH_reply_seckennedy.md
