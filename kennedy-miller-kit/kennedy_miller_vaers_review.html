@@ -5,57 +5,83 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kennedy–Miller VAERS Review · Meridian North Corpus</title>
 <style>
+  /* Formal, high-legibility light theme. Softer, desaturated colors used sparingly.
+     Designed for serious medical/forensic content and for readers with low vision:
+     large type, strong text contrast, generous spacing, colour never the sole signal. */
   :root{
-    --bg:#0b0f14; --panel:#121922; --panel2:#0e151d; --ink:#e6edf3; --mut:#8aa0b4;
-    --line:#1f2b38; --acc:#5eb1ff; --accd:#1c5fa8;
-    --warn:#ff5d5d; --caution:#ffb454; --watch:#ffe066; --low:#5ad19a; --lore:#b18cff;
+    --bg:#f4f2ec; --panel:#ffffff; --panel2:#efece4; --ink:#1e2630; --mut:#56616e;
+    --line:#d7d1c6; --acc:#345670; --accd:#284258;
+    --warn:#a85a52; --caution:#b5893f; --watch:#8f7d33; --low:#5e8468; --lore:#7d6a94;
+    --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,"Times New Roman",serif;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  header{padding:22px 22px 10px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0e151d,#0b0f14)}
-  h1{margin:0 0 4px;font-size:20px;letter-spacing:.2px}
-  .sub{color:var(--mut);font-size:13px}
-  .caveat{margin-top:10px;padding:8px 12px;border:1px solid var(--accd);border-radius:8px;background:#0d1a2a;color:#bcd6f2;font-size:12.5px}
-  nav{display:flex;flex-wrap:wrap;gap:6px;padding:12px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
-  nav button{background:var(--panel);color:var(--ink);border:1px solid var(--line);padding:8px 13px;border-radius:999px;cursor:pointer;font-size:13px}
-  nav button.active{background:var(--accd);border-color:var(--acc);color:#fff}
-  main{padding:20px 22px;max-width:1040px}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:17px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  header{padding:26px 28px 16px;border-bottom:2px solid var(--line);background:var(--panel)}
+  h1{margin:0 0 6px;font-family:var(--serif);font-size:25px;font-weight:600;letter-spacing:.2px;line-height:1.25}
+  .sub{color:var(--mut);font-size:15px;max-width:60em}
+  .caveat{margin-top:14px;padding:12px 16px;border:1px solid var(--line);border-left:5px solid var(--acc);
+    border-radius:6px;background:#eaeef2;color:#26333f;font-size:15px}
+  nav{display:flex;flex-wrap:wrap;gap:8px;padding:14px 22px;border-bottom:1px solid var(--line);
+    position:sticky;top:0;background:var(--bg);z-index:5}
+  nav button{background:var(--panel);color:var(--ink);border:1px solid var(--line);
+    padding:10px 16px;border-radius:6px;cursor:pointer;font-size:15px}
+  nav button:hover{border-color:var(--acc)}
+  nav button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+  nav button.active{background:var(--accd);border-color:var(--accd);color:#fff;font-weight:600}
+  main{padding:26px 28px;max-width:60rem;margin:0 auto}
   section{display:none} section.active{display:block}
-  h2{font-size:16px;margin:0 0 6px;color:var(--acc)}
-  h3{font-size:13.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;margin:18px 0 6px}
-  p{margin:8px 0}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px;margin-top:10px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px}
-  .card .t{font-size:13.5px;font-weight:600;margin-bottom:4px}
-  .meta{font-size:11.5px;color:var(--mut);margin:2px 0}
-  .tag{display:inline-block;font-size:10.5px;padding:2px 7px;border-radius:5px;border:1px solid var(--line);margin:2px 3px 0 0;color:var(--mut)}
-  .sig{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:5px;color:#0b0f14}
-  .sig.WARN{background:var(--warn)} .sig.CAUTION{background:var(--caution)} .sig.WATCH{background:var(--watch)} .sig.LOW{background:var(--low)} .sig.LORE{background:var(--lore)}
-  .src{font-size:11px;color:var(--mut);font-family:ui-monospace,Menlo,monospace;word-break:break-all}
-  a{color:var(--acc)}
-  table{border-collapse:collapse;width:100%;font-size:13px;margin:8px 0}
-  th,td{border:1px solid var(--line);padding:6px 9px;text-align:right} th:first-child,td:first-child{text-align:left}
-  th{background:var(--panel2);color:var(--mut);font-weight:600}
-  .chartwrap{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:10px;overflow-x:auto}
-  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mut);margin:6px 0 2px}
-  .legend i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:5px;vertical-align:-1px}
-  .note{font-size:12.5px;color:var(--mut)}
-  input,select,textarea{background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:8px;font-size:13px}
-  textarea{width:100%;min-height:90px;font-family:ui-monospace,Menlo,monospace}
-  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
-  button.act{background:var(--accd);border:1px solid var(--acc);color:#fff;border-radius:7px;padding:8px 14px;cursor:pointer}
-  .mono{font-family:ui-monospace,Menlo,monospace;font-size:12px}
-  .ok{color:var(--low)} .bad{color:var(--warn)}
-  .pill{font-size:11px;border:1px solid var(--line);border-radius:999px;padding:2px 9px;color:var(--mut)}
-  .big{font-size:26px;font-weight:700}
-  footer{padding:18px 22px;color:var(--mut);font-size:11.5px;border-top:1px solid var(--line)}
+  h2{font-family:var(--serif);font-size:23px;font-weight:600;margin:6px 0 10px;color:var(--ink);line-height:1.3}
+  h3{font-size:15px;color:var(--ink);font-weight:700;letter-spacing:.3px;margin:22px 0 6px}
+  p{margin:12px 0;max-width:64em}
+  strong{font-weight:700}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px}
+  .card .t{font-size:16px;font-weight:700;margin-bottom:6px;font-family:var(--serif)}
+  .meta{font-size:13.5px;color:var(--mut);margin:3px 0}
+  .tag{display:inline-block;font-size:12.5px;padding:3px 9px;border-radius:4px;border:1px solid var(--line);
+    margin:3px 4px 0 0;color:var(--mut);background:var(--panel2)}
+  .sig{display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:.4px;padding:3px 10px;
+    border-radius:4px;color:var(--ink);border:1px solid}
+  .sig.WARN{background:#f1e2df;border-color:var(--warn)} .sig.CAUTION{background:#f4ecda;border-color:var(--caution)}
+  .sig.WATCH{background:#eeead4;border-color:var(--watch)} .sig.LOW{background:#e3ede7;border-color:var(--low)}
+  .sig.LORE{background:#ebe6f0;border-color:var(--lore)}
+  .src{font-size:13px;color:var(--mut);font-family:ui-monospace,Menlo,monospace;word-break:break-all}
+  a{color:var(--acc);text-underline-offset:2px}
+  table{border-collapse:collapse;width:100%;font-size:15px;margin:12px 0}
+  th,td{border:1px solid var(--line);padding:9px 12px;text-align:right} th:first-child,td:first-child{text-align:left}
+  th{background:var(--panel2);color:var(--ink);font-weight:700}
+  tr:nth-child(even) td{background:#faf9f5}
+  .chartwrap{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px;margin-top:14px;overflow-x:auto}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;color:var(--ink);margin:6px 0 2px}
+  .legend i{display:inline-block;width:13px;height:13px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+  .note{font-size:14.5px;color:var(--mut)}
+  input,select,textarea{background:var(--panel);color:var(--ink);border:1px solid var(--line);
+    border-radius:6px;padding:10px;font-size:15px}
+  input:focus,select:focus,textarea:focus,button:focus-visible{outline:3px solid var(--acc);outline-offset:1px}
+  textarea{width:100%;min-height:96px;font-family:ui-monospace,Menlo,monospace;font-size:14px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}
+  button.act{background:var(--accd);border:1px solid var(--accd);color:#fff;border-radius:6px;
+    padding:10px 18px;cursor:pointer;font-size:15px;font-weight:600}
+  .mono{font-family:ui-monospace,Menlo,monospace;font-size:13.5px}
+  .ok{color:var(--low);font-weight:600} .bad{color:var(--warn);font-weight:600}
+  .pill{font-size:13px;border:1px solid var(--line);border-radius:999px;padding:3px 11px;color:var(--mut);background:var(--panel2)}
+  .big{font-size:30px;font-weight:700;font-family:var(--serif);color:var(--acc)}
+  .refer{border:1px solid var(--line);border-left:5px solid var(--low);background:#eaf1ec;
+    color:#22332a;border-radius:6px;padding:16px 18px;margin:14px 0;font-size:15.5px}
+  .refer .t{font-weight:700;font-family:var(--serif);font-size:17px;margin-bottom:6px;color:#2c4a39}
+  footer{padding:24px 28px;color:var(--mut);font-size:14px;border-top:2px solid var(--line);max-width:64em}
 </style>
 </head>
 <body>
 <header>
-  <h1>Kennedy–Miller VAERS Review <span class="pill">Meridian North · six-axis corpus · v2</span></h1>
+  <h1>Kennedy–Miller VAERS Review <span class="pill">Meridian North · six-axis corpus</span></h1>
   <div class="sub">A claim-navigator for the removal of Miller (2021) "Vaccines and sudden infant death" from <em>Toxicology Reports</em>. Neutral on safety · strong on method · method fully open.</div>
   <div class="caveat" id="globalCaveat">passive surveillance — reports are unverified — a report is not causation — reporting rates are not incidence rates — days-to-onset reflects reporting behaviour, not a hazard window</div>
+  <div class="refer" style="margin-top:10px">
+    <div class="t">A navigator, not medical advice.</div>
+    This surfaces facts and the questions to bring to a clinician — it does not diagnose and it does not decide. If you are asking about a real person with a current symptom or an urgent give / skip / delay decision, contact your doctor. For an infant who is unresponsive, struggling to breathe, or has had a seizure, call emergency services.
+  </div>
 </header>
 
 <nav id="nav"></nav>
@@ -95,7 +121,7 @@
   <!-- V2: OBSERVED vs EXPECTED -->
   <section id="oe">
     <h2>v2 — Observed vs Expected: the age confound</h2>
-    <div class="caveat" style="border-color:var(--low);background:#0c1f17;color:#bdead7;font-size:14px;margin-bottom:12px">
+    <div class="caveat" style="border-left-color:var(--low);background:#eaf1ec;color:#22332a;margin-bottom:14px">
       <strong>In plain language:</strong> these babies died at the ages when SIDS naturally peaks — which is also when the shots are scheduled. Timing alone cannot separate "the vaccine caused it" from "a SIDS-aged death that followed the visit the calendar put there." That is a statement about what this data <em>can't</em> show, not a claim that vaccines are safe or unsafe.
     </div>
     <p>The day-to-onset chart shows <em>when deaths are reported relative to the shot</em>. This panel asks the deeper question three independent reviews all pointed to: <strong>at what age do these infants die?</strong> Because if the deaths fall at the ages where SIDS already peaks, then "deaths cluster after vaccination" may be nothing more than "vaccines are scheduled at the age when infants are most likely to die of SIDS anyway."</p>
@@ -114,7 +140,7 @@
   <!-- KMV-011 CROSS-NATIONAL SUID (the denominator, gathered) -->
   <section id="suid">
     <h2>kmv-011 — the denominator, gathered: US vs Nordic SUID</h2>
-    <div class="caveat" style="border-color:var(--acc);background:#0d1a2a;color:#bcd6f2;font-size:13.5px;margin-bottom:12px">
+    <div class="caveat" style="margin-bottom:14px">
       <strong>This is the comparison VAERS couldn't make.</strong> A denominated, like-for-like SUID rate — deaths per 100,000 <em>live births</em> — from one source of record (WHO Mortality Database) so the US and five Nordics are coded the same way. SUID = ICD-10 <strong>R95 (SIDS) + R99 (unknown) + W75 (ASSB)</strong>, the composite that cancels the SIDS-vs-undetermined diagnostic shift.
     </div>
     <div class="chartwrap">
@@ -131,10 +157,45 @@
     <p class="note mono">source: WHO Mortality Database (gathered 2026-06-16, kind-gatherer discipline) · data/suid_crossnational_ok_rows.csv · rate is not cause · lot caveat: reports-per-lot ≠ doses-per-lot</p>
   </section>
 
+  <!-- KMV-013 OUTCOME SPACE + LATENCY -->
+  <section id="space">
+    <h2>kmv-013 — the outcome space &amp; time-to-effect: how not to be fooled, in either direction</h2>
+    <div class="refer">
+      <div class="t">This is a navigator, not medical advice — and it knows when to send you to a doctor.</div>
+      It surfaces facts and the questions to take to a clinician. It does not diagnose, and it does not decide for you. <strong>Go to your doctor</strong> if you are asking about a real person with a current symptom, or an urgent give / skip / delay decision. <strong>Call emergency services now</strong> for an infant who is unresponsive, struggling to breathe, or has had a seizure. The corpus helps you prepare the conversation; it cannot replace it.
+    </div>
+    <p>SIDS is one outcome. Honest vaccine safety is about the <em>whole</em> outcome space — and that space, together with the clock each event runs on, is exactly where both alarm and false reassurance get manufactured. Two methodological tricks live here. The page names them so a reader can see them being run — by either side.</p>
+
+    <h3>Trick 1 — the size of the list</h3>
+    <p>Every adverse event is catalogued in a standard dictionary, <strong>MedDRA</strong> — roughly <strong>26,000 "preferred terms" across 27 organ-system classes</strong> — and every VAERS report is coded into it. A manufacturer's package insert (Section 6) lists events in two very different bins, and conflating them is the whole error:</p>
+    <div class="grid">
+      <div class="card"><div class="t">6.1 Clinical-trial experience &nbsp;<span class="sig LOW">controlled</span></div><div class="note">Events seen <em>more</em> in the vaccine arm than in placebo. It has a denominator and a comparison group. A short list, and it means something.</div></div>
+      <div class="card"><div class="t">6.2 Post-marketing experience &nbsp;<span class="sig CAUTION">spontaneous</span></div><div class="note">The long, alarming list — voluntary reports, carried for transparency, under the required legal disclaimer that <em>"it is not always possible to reliably estimate their frequency or establish a causal relationship."</em> This is the VAERS no-denominator problem, printed on the label. Listing ≠ caused.</div></div>
+    </div>
+    <p><strong>Why the length is the trap.</strong> Test vaccine-versus-control across ~26,000 outcomes and, by chance alone, about 5% — well over a thousand — will cross "significant" at p&lt;0.05 even if nothing is wrong. So cherry-picking the single scariest event (what a SIDS-only or "hot-lot" analysis does) is <em>guaranteed</em> to find a signal; a defender can just as easily pick a reassuring one. The honest method tests the whole space against a denominated control <em>with multiplicity correction</em> (false-discovery-rate) and reports only what survives. The project's own method note did exactly this on court-released trial data: 22 organ-system comparisons, corrected — <strong>0 of 22 survived</strong>.</p>
+
+    <h3>Trick 2 — the clock (time-to-effect)</h3>
+    <p>There is no single "risk window," because each event runs on its own biological clock. Whichever window you pick decides what you can find — so it has to be <strong>pre-specified from a known mechanism</strong>, and the observed latency must <em>match</em> it. An event at day 30 cannot be anaphylaxis; the mechanism forbids it. A death at day 2 is at least <em>consistent</em> with a cytokine mechanism — consistency, not proof.</p>
+    <table>
+      <tr><th>Latency class</th><th>Plausible window</th><th>Mechanism</th><th>Established example</th></tr>
+      <tr><td>Immediate</td><td>minutes–hours</td><td>IgE / mast-cell</td><td>Anaphylaxis</td></tr>
+      <tr><td>Acute</td><td>~1–7 days</td><td>inflammation / cytokines</td><td>Febrile seizure; mRNA myocarditis (~2–4 d)</td></tr>
+      <tr><td>Sub-acute</td><td>~3–7 days</td><td>mechanical / immune</td><td>Rotavirus intussusception</td></tr>
+      <tr><td>Weeks</td><td>~1–6 weeks</td><td>autoimmune / neuro</td><td>Guillain-Barré after influenza vaccine</td></tr>
+      <tr><td>Delayed / "dormant"</td><td>weeks–months</td><td>autoimmune</td><td>Narcolepsy after Pandemrix (H1N1)</td></tr>
+    </table>
+    <p><strong>The two tricks multiply.</strong> ~26,000 outcomes × several plausible windows each is the "garden of forking paths": free to choose both <em>what</em> outcome and <em>when</em> you look, an analyst can produce essentially any result they want. The single honest standard — the one that ties this whole kit together — is: <strong>pre-specify the outcome, the comparator, the denominator, and the mechanism-justified window, then test against a real control with multiplicity correction.</strong> Everything outside that is forking paths.</p>
+    <p><strong>And it cuts both ways.</strong> Just as window-hunting manufactures false alarms, a window that is too short <em>hides</em> a real delayed effect: narcolepsy after Pandemrix took months to surface, and a 7-day analysis would have certified it "safe." Absence of an acute signal is not absence of a delayed one — that is a blind spot, and we name it rather than read silence as safety.</p>
+
+    <h3>What this corpus can show now — and the honest gap</h3>
+    <p>The VAERS data already in hand carries the vaccination dates, onset dates, ages, and MedDRA terms needed to <em>display</em> the breadth of reported events by organ system and the days-to-onset distribution for each — labelled reports-not-causation, never a rate. What it cannot supply is the <strong>denominator per event</strong> (background incidence by age) and per-window dose counts; those require linked active-surveillance data (VSD / BEST) and remain the standing named gaps. So this tab is the <em>map</em> of the outcome space and the rules for reading it — not a verdict on any single event, which this data cannot give.</p>
+    <p class="note mono">method: pre-specified outcome + comparator + denominator + mechanism-window, FDR-corrected · reports are not causation · only a clinician concludes for a person</p>
+  </section>
+
   <!-- MILLER STEELMAN -->
   <section id="miller">
     <h2>What Miller actually argued — and why the rebuttal still doesn't hold</h2>
-    <div class="caveat" style="border-color:var(--watch);background:#1c1a0e;color:#efe4b0;font-size:13.5px;margin-bottom:12px">
+    <div class="caveat" style="border-left-color:var(--watch);background:#f3eeda;color:#3a3318;margin-bottom:14px">
       <strong>Contested ≠ dismissed.</strong> This kit does not caricature the paper. Miller anticipated the reporting-bias objection and built a specific defense. We represent it fairly, reproduce his numbers, and then show why the inference still cannot bear causal weight — in either direction.
     </div>
     <h3>His actual position (not the strawman)</h3>
@@ -208,13 +269,13 @@
 // ---------- embedded data (traceable to ./data/*.csv) ----------
 const DOO = {
  cohorts:[
-  {k:"infant_lt1_death", label:"Infant <1yr, died (Miller-style slice)", n:2941, onset:2638, color:"#ff5d5d",
+  {k:"infant_lt1_death", label:"Infant <1yr, died (Miller-style slice)", n:2941, onset:2638, color:"#a85a52",
    hist:{ "0":374,"1":756,"2":328,"3":236,"4":133,"5":99,"6":104,"7":51,"8-14":233,"15-30":204,"31-90":95,"91+":25 }},
-  {k:"infant_lt1_all", label:"Infant <1yr, ALL reports (mostly non-fatal)", n:69911, onset:62365, color:"#ffb454",
+  {k:"infant_lt1_all", label:"Infant <1yr, ALL reports (mostly non-fatal)", n:69911, onset:62365, color:"#b5893f",
    hist:{ "0":37604,"1":11079,"2":3373,"3":1755,"4":1064,"5":781,"6":649,"7":596,"8-14":1638,"15-30":1306,"31-90":1343,"91+":1177 }},
-  {k:"adult_18_65_death", label:"Adult 18–64, died (control)", n:5075, onset:4662, color:"#5eb1ff",
+  {k:"adult_18_65_death", label:"Adult 18–64, died (control)", n:5075, onset:4662, color:"#5b7a99",
    hist:{ "0":516,"1":519,"2":253,"3":151,"4":124,"5":115,"6":74,"7":93,"8-14":424,"15-30":424,"31-90":432,"91+":1537 }},
-  {k:"all_reports", label:"All VAERS reports 1990–2026 (baseline)", n:1989028, onset:1647504, color:"#5ad19a",
+  {k:"all_reports", label:"All VAERS reports 1990–2026 (baseline)", n:1989028, onset:1647504, color:"#5e8468",
    hist:{ "0":777928,"1":314781,"2":92657,"3":43444,"4":26093,"5":20841,"6":18371,"7":30657,"8-14":88632,"15-30":62751,"31-90":56414,"91+":114935 }}
  ],
  order:["0","1","2","3","4","5","6","7","8-14","15-30","31-90","91+"]
@@ -223,11 +284,11 @@ const DOO = {
 const AGE = {n:2941, pct:[3.0,7.0,44.0,19.4,11.1,1.3,7.4,2.6,1.1,2.0,1.0,0.2], sidsWindow:[2,5]};
 // kmv-011: SUID (R95+R99+W75) per 100k live births, by country-year. WHO Mortality DB (2026-06-16).
 const SUID = {
- USA:{c:"#ff5d5d", pts:[[1999,93.85],[2000,94.44],[2001,94.56],[2002,94.51],[2003,89.73],[2004,92.36],[2005,97.48],[2006,93.05],[2007,97.49],[2008,99.04],[2009,97.0],[2010,90.26],[2011,86.07],[2012,87.61],[2013,87.33],[2014,87.51],[2015,92.6],[2016,91.41],[2017,93.38],[2018,90.94],[2019,90.33],[2020,93.48],[2021,99.23],[2022,101.15],[2023,99.35]]},
- DNK:{c:"#ffb454", pts:[[1994,41.63],[1995,32.96],[1996,38.44],[1997,38.44],[1998,30.23],[1999,40.77],[2000,26.83],[2001,50.41],[2002,21.85],[2003,29.41],[2004,17.03],[2005,23.33],[2006,18.47],[2007,67.1],[2008,103.02],[2009,130.54],[2010,137.2],[2011,71.19],[2012,53.53],[2013,53.69],[2014,82.64],[2015,77.31],[2016,43.08],[2017,43.41],[2018,41.92],[2019,51.88],[2020,75.11],[2021,51.67]]},
- SWE:{c:"#5eb1ff", pts:[[1997,45.36],[1998,39.31],[1999,40.83],[2000,46.44],[2001,36.08],[2002,33.4],[2003,28.24],[2004,42.6],[2005,32.56],[2006,48.15],[2007,33.51],[2008,34.77],[2009,27.73],[2010,44.97],[2011,35.79],[2012,39.76],[2013,43.51],[2014,20.83],[2015,46.14],[2016,29.46],[2017,25.13],[2018,18.13],[2019,30.56],[2020,25.65],[2021,21.88],[2022,17.19],[2023,23.99],[2024,10.16]]},
- NOR:{c:"#5ad19a", pts:[[1996,60.73],[1997,46.82],[1998,53.13],[1999,52.28],[2000,47.27],[2001,40.57],[2002,37.88],[2003,24.8],[2004,28.09],[2005,35.24],[2006,23.91],[2007,30.79],[2008,23.14],[2009,24.27],[2010,22.79],[2011,23.25],[2012,28.21],[2013,13.56],[2014,30.47],[2015,20.32],[2016,16.98]]},
- FIN:{c:"#b18cff", pts:[[1996,29.64],[1997,40.45],[1998,36.77],[1999,27.79],[2000,31.72],[2001,24.92],[2002,28.8],[2003,37.08],[2004,29.43],[2005,34.64],[2006,23.79],[2007,22.14],[2008,21.84],[2009,26.48],[2010,29.52],[2011,16.68],[2012,30.26],[2013,20.64],[2014,27.96],[2016,15.15],[2017,15.9],[2018,14.71],[2019,30.69],[2020,10.76],[2021,16.13],[2022,17.8],[2024,20.59]]}
+ USA:{c:"#a85a52", pts:[[1999,93.85],[2000,94.44],[2001,94.56],[2002,94.51],[2003,89.73],[2004,92.36],[2005,97.48],[2006,93.05],[2007,97.49],[2008,99.04],[2009,97.0],[2010,90.26],[2011,86.07],[2012,87.61],[2013,87.33],[2014,87.51],[2015,92.6],[2016,91.41],[2017,93.38],[2018,90.94],[2019,90.33],[2020,93.48],[2021,99.23],[2022,101.15],[2023,99.35]]},
+ DNK:{c:"#b5893f", pts:[[1994,41.63],[1995,32.96],[1996,38.44],[1997,38.44],[1998,30.23],[1999,40.77],[2000,26.83],[2001,50.41],[2002,21.85],[2003,29.41],[2004,17.03],[2005,23.33],[2006,18.47],[2007,67.1],[2008,103.02],[2009,130.54],[2010,137.2],[2011,71.19],[2012,53.53],[2013,53.69],[2014,82.64],[2015,77.31],[2016,43.08],[2017,43.41],[2018,41.92],[2019,51.88],[2020,75.11],[2021,51.67]]},
+ SWE:{c:"#5b7a99", pts:[[1997,45.36],[1998,39.31],[1999,40.83],[2000,46.44],[2001,36.08],[2002,33.4],[2003,28.24],[2004,42.6],[2005,32.56],[2006,48.15],[2007,33.51],[2008,34.77],[2009,27.73],[2010,44.97],[2011,35.79],[2012,39.76],[2013,43.51],[2014,20.83],[2015,46.14],[2016,29.46],[2017,25.13],[2018,18.13],[2019,30.56],[2020,25.65],[2021,21.88],[2022,17.19],[2023,23.99],[2024,10.16]]},
+ NOR:{c:"#5e8468", pts:[[1996,60.73],[1997,46.82],[1998,53.13],[1999,52.28],[2000,47.27],[2001,40.57],[2002,37.88],[2003,24.8],[2004,28.09],[2005,35.24],[2006,23.91],[2007,30.79],[2008,23.14],[2009,24.27],[2010,22.79],[2011,23.25],[2012,28.21],[2013,13.56],[2014,30.47],[2015,20.32],[2016,16.98]]},
+ FIN:{c:"#7d6a94", pts:[[1996,29.64],[1997,40.45],[1998,36.77],[1999,27.79],[2000,31.72],[2001,24.92],[2002,28.8],[2003,37.08],[2004,29.43],[2005,34.64],[2006,23.79],[2007,22.14],[2008,21.84],[2009,26.48],[2010,29.52],[2011,16.68],[2012,30.26],[2013,20.64],[2014,27.96],[2016,15.15],[2017,15.9],[2018,14.71],[2019,30.69],[2020,10.76],[2021,16.13],[2022,17.8],[2024,20.59]]}
 };
 const RECORDS = [
  {id:"kmv-001",sig:"WARN",t:"Miller NZ — Vaccines and sudden infant death: VAERS 1990–2019 + literature review",journal:"Toxicology Reports",year:2021,cls:"retracted",ident:"10.1016/j.toxrep.2021.06.020",idk:"doi",mech:["passive_surveillance","temporal_reporting_bias","denominator_absence","causation_inference","stimulated_reporting"],cohorts:["SIDS","infant_death"],link:"https://doi.org/10.1016/j.toxrep.2021.06.020",cav:"retracted_retained_not_deleted; correlation_is_not_causation; passive_surveillance_no_denominator; temporal_clustering_is_a_reporting_artifact; pmid_34258234"},
@@ -241,7 +302,7 @@ const RECORDS = [
 ];
 
 // ---------- nav ----------
-const TABS=[["how","HOW · sample pull"],["oe","v2 · Observed vs Expected"],["suid","kmv-011 · US vs Nordic (denominator)"],["miller","Miller's case (steelman)"],["overview","Overview"],["corpus","Query corpus"],["mech","Mechanism crossroads"],["reshape","Reshape question"],["notin","Not in corpus?"],["verify","Verify (SHA-256)"]];
+const TABS=[["how","HOW · sample pull"],["oe","v2 · Observed vs Expected"],["suid","kmv-011 · US vs Nordic (denominator)"],["space","kmv-013 · Outcome space & latency"],["miller","Miller's case (steelman)"],["overview","Overview"],["corpus","Query corpus"],["mech","Mechanism crossroads"],["reshape","Reshape question"],["notin","Not in corpus?"],["verify","Verify (SHA-256)"]];
 const nav=document.getElementById('nav');
 TABS.forEach(([id,lab],i)=>{const b=document.createElement('button');b.textContent=lab;b.dataset.id=id;if(i===0)b.classList.add('active');b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')};nav.appendChild(b)});
 
@@ -252,7 +313,7 @@ function drawChart(){
   const max=24; // y axis max % per bucket-cohort
   const bw=(W-padL-10)/DOO.order.length, gw=bw/(DOO.cohorts.length+0.6);
   let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`;
-  for(let y=0;y<=max;y+=4){const yy=padT+(H-padT-padB)*(1-y/max);s+=`<line x1="${padL}" y1="${yy}" x2="${W-6}" y2="${yy}" stroke="#1f2b38"/><text x="4" y="${yy+3}" fill="#8aa0b4" font-size="9">${y}%</text>`}
+  for(let y=0;y<=max;y+=4){const yy=padT+(H-padT-padB)*(1-y/max);s+=`<line x1="${padL}" y1="${yy}" x2="${W-6}" y2="${yy}" stroke="#ddd6c9"/><text x="4" y="${yy+3}" fill="#56616e" font-size="9">${y}%</text>`}
   DOO.order.forEach((b,bi)=>{
     const x0=padL+bi*bw;
     DOO.cohorts.forEach((c,ci)=>{
@@ -260,9 +321,9 @@ function drawChart(){
       const x=x0+ci*gw+4, y=padT+(H-padT-padB)-h;
       s+=`<rect x="${x}" y="${y}" width="${gw-1.5}" height="${h}" fill="${c.color}"><title>${c.label} · day ${b}: ${pct(c,b).toFixed(1)}%</title></rect>`;
     });
-    s+=`<text x="${x0+bw/2}" y="${H-padB+14}" fill="#8aa0b4" font-size="9" text-anchor="middle">${b}</text>`;
+    s+=`<text x="${x0+bw/2}" y="${H-padB+14}" fill="#56616e" font-size="9" text-anchor="middle">${b}</text>`;
   });
-  s+=`<text x="${padL+ (W-padL)/2}" y="${H-6}" fill="#8aa0b4" font-size="10" text-anchor="middle">days from vaccination to symptom onset →</text></svg>`;
+  s+=`<text x="${padL+ (W-padL)/2}" y="${H-6}" fill="#56616e" font-size="10" text-anchor="middle">days from vaccination to symptom onset →</text></svg>`;
   document.getElementById('chart').innerHTML=s;
   document.getElementById('legend').innerHTML=DOO.cohorts.map(c=>`<span><i style="background:${c.color}"></i>${c.label}</span>`).join('');
   document.getElementById('chartNote').textContent="Bars clipped at 24% for scale; day-0 of the all-infant and baseline cohorts run higher (hover for exact values).";
@@ -281,16 +342,16 @@ function drawAge(){
   let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`;
   // SIDS window band (months 2-5)
   const bx=padL+AGE.sidsWindow[0]*bw, bw2=(AGE.sidsWindow[1]-AGE.sidsWindow[0])*bw;
-  s+=`<rect x="${bx}" y="${padT}" width="${bw2}" height="${H-padT-padB}" fill="#5eb1ff" opacity="0.10"/>`;
-  s+=`<text x="${bx+bw2/2}" y="${padT+12}" fill="#9cc7f5" font-size="10" text-anchor="middle">background SIDS peak · vaccine schedule 2/4/6mo</text>`;
-  for(let y=0;y<=max;y+=8){const yy=padT+(H-padT-padB)*(1-y/max);s+=`<line x1="${padL}" y1="${yy}" x2="${W-6}" y2="${yy}" stroke="#1f2b38"/><text x="4" y="${yy+3}" fill="#8aa0b4" font-size="9">${y}%</text>`}
+  s+=`<rect x="${bx}" y="${padT}" width="${bw2}" height="${H-padT-padB}" fill="#5b7a99" opacity="0.10"/>`;
+  s+=`<text x="${bx+bw2/2}" y="${padT+12}" fill="#345670" font-size="10" text-anchor="middle">background SIDS peak · vaccine schedule 2/4/6mo</text>`;
+  for(let y=0;y<=max;y+=8){const yy=padT+(H-padT-padB)*(1-y/max);s+=`<line x1="${padL}" y1="${yy}" x2="${W-6}" y2="${yy}" stroke="#ddd6c9"/><text x="4" y="${yy+3}" fill="#56616e" font-size="9">${y}%</text>`}
   AGE.pct.forEach((v,m)=>{
     const h=(H-padT-padB)*(Math.min(v,max)/max), x=padL+m*bw+5, y=padT+(H-padT-padB)-h;
     const inWin = m>=AGE.sidsWindow[0]&&m<AGE.sidsWindow[1];
-    s+=`<rect x="${x}" y="${y}" width="${bw-9}" height="${h}" fill="${inWin?'#ff5d5d':'#7a8aa0'}"><title>${m}-${m+1} months: ${v}% of infant deaths</title></rect>`;
-    s+=`<text x="${x+(bw-9)/2}" y="${H-padB+14}" fill="#8aa0b4" font-size="8.5" text-anchor="middle">${m}</text>`;
+    s+=`<rect x="${x}" y="${y}" width="${bw-9}" height="${h}" fill="${inWin?'#a85a52':'#9aa3ad'}"><title>${m}-${m+1} months: ${v}% of infant deaths</title></rect>`;
+    s+=`<text x="${x+(bw-9)/2}" y="${H-padB+14}" fill="#56616e" font-size="8.5" text-anchor="middle">${m}</text>`;
   });
-  s+=`<text x="${padL+(W-padL)/2}" y="${H-6}" fill="#8aa0b4" font-size="10" text-anchor="middle">age of death, months →</text></svg>`;
+  s+=`<text x="${padL+(W-padL)/2}" y="${H-6}" fill="#56616e" font-size="10" text-anchor="middle">age of death, months →</text></svg>`;
   document.getElementById('ageChart').innerHTML=s;
   document.getElementById('ageNote').textContent="VAERS infant deaths (<1yr, n=2,941) by age. Red = inside the 2–5mo SIDS/schedule window (74.5% of deaths). Hover for values.";
 }
@@ -302,16 +363,16 @@ function drawSuid(){
   const Y=v=>padT+(H-padT-padB)*(1-Math.min(v,ymax)/ymax);
   let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`;
   // DK recoding band 2007+
-  s+=`<rect x="${X(2007)}" y="${padT}" width="${X(2021)-X(2007)}" height="${H-padT-padB}" fill="#ffb454" opacity="0.07"/>`;
-  s+=`<text x="${(X(2007)+X(2021))/2}" y="${padT+11}" fill="#caa15a" font-size="9" text-anchor="middle">DK R99 recoding</text>`;
-  for(let v=0;v<=ymax;v+=20){const yy=Y(v);s+=`<line x1="${padL}" y1="${yy}" x2="${W-6}" y2="${yy}" stroke="#1f2b38"/><text x="6" y="${yy+3}" fill="#8aa0b4" font-size="9">${v}</text>`;}
-  for(let yr=1995;yr<=2024;yr+=5){s+=`<text x="${X(yr)}" y="${H-padB+14}" fill="#8aa0b4" font-size="9" text-anchor="middle">${yr}</text>`;}
+  s+=`<rect x="${X(2007)}" y="${padT}" width="${X(2021)-X(2007)}" height="${H-padT-padB}" fill="#b5893f" opacity="0.07"/>`;
+  s+=`<text x="${(X(2007)+X(2021))/2}" y="${padT+11}" fill="#8a6a2e" font-size="9" text-anchor="middle">DK R99 recoding</text>`;
+  for(let v=0;v<=ymax;v+=20){const yy=Y(v);s+=`<line x1="${padL}" y1="${yy}" x2="${W-6}" y2="${yy}" stroke="#ddd6c9"/><text x="6" y="${yy+3}" fill="#56616e" font-size="9">${v}</text>`;}
+  for(let yr=1995;yr<=2024;yr+=5){s+=`<text x="${X(yr)}" y="${H-padB+14}" fill="#56616e" font-size="9" text-anchor="middle">${yr}</text>`;}
   for(const k in SUID){const o=SUID[k];let d="";o.pts.forEach((p,i)=>{d+=(i?"L":"M")+X(p[0]).toFixed(1)+" "+Y(p[1]).toFixed(1)+" ";});
     const wide=(k==="USA")?3:1.8;
     s+=`<path d="${d}" fill="none" stroke="${o.c}" stroke-width="${wide}"/>`;
     o.pts.forEach(p=>{s+=`<circle cx="${X(p[0]).toFixed(1)}" cy="${Y(p[1]).toFixed(1)}" r="${k==='USA'?2.6:1.6}" fill="${o.c}"><title>${k} ${p[0]}: ${p[1]}/100k</title></circle>`;});
   }
-  s+=`<text x="${padL+(W-padL)/2}" y="${H-4}" fill="#8aa0b4" font-size="10" text-anchor="middle">year →   (y = SUID deaths per 100,000 live births)</text></svg>`;
+  s+=`<text x="${padL+(W-padL)/2}" y="${H-4}" fill="#56616e" font-size="10" text-anchor="middle">year →   (y = SUID deaths per 100,000 live births)</text></svg>`;
   document.getElementById('suidChart').innerHTML=s;
   document.getElementById('suidLegend').innerHTML=Object.keys(SUID).map(k=>`<span><i style="background:${SUID[k].c}"></i>${k}${k==='USA'?' (1999–2023; births WHO→2005, NCHS 2006+)':''}</span>`).join('');
   document.getElementById('suidNote').textContent="USA line is thicker and now spans 1999–2023 (births: WHO MDB through 2005, NCHS natality 2006+). Iceland omitted from the plot (tiny counts, noisy) but kept in the CSV. Hover any point for the value.";

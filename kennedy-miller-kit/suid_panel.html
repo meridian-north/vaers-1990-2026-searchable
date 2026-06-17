@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>SUID panel — render</title>
+<style>
+  body{margin:0;background:#0b0f14;color:#e6edf3;font:14px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;text-align:center}
+  #bar{padding:12px}
+  button{background:#1c5fa8;color:#fff;border:1px solid #5eb1ff;border-radius:7px;padding:9px 18px;font-size:14px;cursor:pointer}
+  .note{color:#8aa0b4;font-size:12px;margin:6px}
+  svg{background:#0b0f14}
+</style></head>
+<body>
+<div id="bar">
+  <button onclick="dl()">⬇ Download PNG (2×)</button>
+  <div class="note">US vs Nordic SUID · composite R95+R99+W75 per 100k live births · neutral on safety, strong on method · a rate is not a cause</div>
+</div>
+<div id="wrap"></div>
+<script>
+const SUID = {
+ USA:{c:"#ff5d5d", pts:[[1999,93.85],[2000,94.44],[2001,94.56],[2002,94.51],[2003,89.73],[2004,92.36],[2005,97.48],[2006,93.05],[2007,97.49],[2008,99.04],[2009,97.0],[2010,90.26],[2011,86.07],[2012,87.61],[2013,87.33],[2014,87.51],[2015,92.6],[2016,91.41],[2017,93.38],[2018,90.94],[2019,90.33],[2020,93.48],[2021,99.23],[2022,101.15],[2023,99.35]]},
+ DNK:{c:"#ffb454", pts:[[1994,41.63],[1995,32.96],[1996,38.44],[1997,38.44],[1998,30.23],[1999,40.77],[2000,26.83],[2001,50.41],[2002,21.85],[2003,29.41],[2004,17.03],[2005,23.33],[2006,18.47],[2007,67.1],[2008,103.02],[2009,130.54],[2010,137.2],[2011,71.19],[2012,53.53],[2013,53.69],[2014,82.64],[2015,77.31],[2016,43.08],[2017,43.41],[2018,41.92],[2019,51.88],[2020,75.11],[2021,51.67]]},
+ SWE:{c:"#5eb1ff", pts:[[1997,45.36],[1998,39.31],[1999,40.83],[2000,46.44],[2001,36.08],[2002,33.4],[2003,28.24],[2004,42.6],[2005,32.56],[2006,48.15],[2007,33.51],[2008,34.77],[2009,27.73],[2010,44.97],[2011,35.79],[2012,39.76],[2013,43.51],[2014,20.83],[2015,46.14],[2016,29.46],[2017,25.13],[2018,18.13],[2019,30.56],[2020,25.65],[2021,21.88],[2022,17.19],[2023,23.99],[2024,10.16]]},
+ NOR:{c:"#5ad19a", pts:[[1996,60.73],[1997,46.82],[1998,53.13],[1999,52.28],[2000,47.27],[2001,40.57],[2002,37.88],[2003,24.8],[2004,28.09],[2005,35.24],[2006,23.91],[2007,30.79],[2008,23.14],[2009,24.27],[2010,22.79],[2011,23.25],[2012,28.21],[2013,13.56],[2014,30.47],[2015,20.32],[2016,16.98]]},
+ FIN:{c:"#b18cff", pts:[[1996,29.64],[1997,40.45],[1998,36.77],[1999,27.79],[2000,31.72],[2001,24.92],[2002,28.8],[2003,37.08],[2004,29.43],[2005,34.64],[2006,23.79],[2007,22.14],[2008,21.84],[2009,26.48],[2010,29.52],[2011,16.68],[2012,30.26],[2013,20.64],[2014,27.96],[2016,15.15],[2017,15.9],[2018,14.71],[2019,30.69],[2020,10.76],[2021,16.13],[2022,17.8],[2024,20.59]]}
+};
+// US per-cause raw [year, sids, unknown, assb, births]
+const USC=[[1999,2648,813,255,3959417],[2000,2523,1044,266,4058814],[2001,2234,1183,390,4025933],[2002,2295,1081,425,4021726],[2003,2162,1090,418,4089950],[2004,2246,1039,513,4112052],[2005,2230,1290,514,4138349],[2006,2323,1058,588,4265555],[2007,2454,1085,669,4316233],[2008,2353,1118,736,4247694],[2009,2226,1116,665,4130665],[2010,2063,918,629,3999386],[2011,1910,869,624,3953590],[2012,1679,1061,723,3952841],[2013,1563,1052,819,3932181],[2014,1545,1090,855,3988076],[2015,1568,1197,919,3978497],[2016,1500,1247,860,3945875],[2017,1363,1288,949,3855500],[2018,1334,1276,838,3791712],[2019,1248,1182,955,3747540],[2020,1389,1084,905,3613647],[2021,1459,1206,971,3664292],[2022,1529,1141,1040,3667758],[2023,1445,1129,994,3591328]];
+
+const W=1600,H=820,INK="#e6edf3",MUT="#8aa0b4",GRID="#22303f";
+function txt(x,y,s,col,sz,anc,wt){return `<text x="${x}" y="${y}" fill="${col||INK}" font-size="${sz||12}" text-anchor="${anc||'start'}" font-family="sans-serif" font-weight="${wt||'normal'}">${s}</text>`;}
+function panelA(ox){
+  const w=700,h=560,pl=ox+48,pt=70,pb=70,ymax=140,y0=1994,y1=2024;
+  const X=y=>pl+(w-60)*((y-y0)/(y1-y0)), Y=v=>pt+(h-pt-pb)*(1-Math.min(v,ymax)/ymax);
+  let s=txt(ox+20,46,"A · US vs Nordic — the denominated comparison",INK,19,'start','bold');
+  s+=`<rect x="${X(2007)}" y="${pt}" width="${X(2010)-X(2007)}" height="${h-pt-pb}" fill="#ffb454" opacity="0.08"/>`;
+  s+=txt((X(2007)+X(2010))/2,pt+12,"DK R99 recoding",'#caa15a',10,'middle');
+  for(let v=0;v<=ymax;v+=20){const yy=Y(v);s+=`<line x1="${pl}" y1="${yy}" x2="${ox+w-6}" y2="${yy}" stroke="${GRID}"/>`+txt(pl-8,yy+3,v,MUT,10,'end');}
+  for(let yr=1995;yr<=2024;yr+=5){s+=txt(X(yr),h-pb+18,yr,MUT,10,'middle');}
+  let lx=ox+w-150, ly=pt+6;
+  for(const k in SUID){const o=SUID[k];let d="";o.pts.forEach((p,i)=>{d+=(i?"L":"M")+X(p[0]).toFixed(1)+" "+Y(p[1]).toFixed(1)+" ";});
+    s+=`<path d="${d}" fill="none" stroke="${o.c}" stroke-width="${k==='USA'?3.4:1.9}"/>`;
+    o.pts.forEach(p=>{s+=`<circle cx="${X(p[0]).toFixed(1)}" cy="${Y(p[1]).toFixed(1)}" r="${k==='USA'?2.8:1.7}" fill="${o.c}"/>`;});
+    s+=`<rect x="${lx}" y="${ly-8}" width="11" height="11" fill="${o.c}"/>`+txt(lx+16,ly+2,k,INK,11);ly+=18;}
+  s+=txt(pl,h-pb+44,"y = SUID deaths per 100,000 live births",MUT,11,'start');
+  s+=txt(ox+20,h-pb+62,"US flat ~86–101/100k (1999–2023; births WHO→2005, NCHS 2006+) — ~2–5× the Nordics. Similar schedules:",MUT,11.5,'start');
+  s+=txt(ox+20,h-pb+80,"the gap is sleep practice / certification / classification, NOT vaccine. An ecological rate can't isolate vaccination.",MUT,11.5,'start');
+  return s;
+}
+function panelB(ox){
+  const w=700,h=560,pl=ox+48,pt=70,pb=70,ymax=110,y0=1999,y1=2023;
+  const X=y=>pl+(w-60)*((y-y0)/(y1-y0)), Y=v=>pt+(h-pt-pb)*(1-Math.min(v,ymax)/ymax);
+  const rate=(c,b)=>1e5*c/b;
+  const yrs=USC.map(r=>r[0]);
+  const sids=USC.map(r=>rate(r[1],r[4])), unk=USC.map(r=>rate(r[2],r[4])), assb=USC.map(r=>rate(r[3],r[4]));
+  let s=txt(ox+20,46,"B · the US diagnostic shift — composite is conserved",INK,19,'start','bold');
+  for(let v=0;v<=ymax;v+=20){const yy=Y(v);s+=`<line x1="${pl}" y1="${yy}" x2="${ox+w-6}" y2="${yy}" stroke="${GRID}"/>`+txt(pl-8,yy+3,v,MUT,10,'end');}
+  for(let yr=2000;yr<=2023;yr+=5){s+=txt(X(yr),h-pb+18,yr,MUT,10,'middle');}
+  // stacked areas: sids (bottom), +unknown, +assb
+  function area(lo,hi,col){let up="",dn="";yrs.forEach((y,i)=>{up+=(i?"L":"M")+X(y).toFixed(1)+" "+Y(hi[i]).toFixed(1)+" ";});
+    for(let i=yrs.length-1;i>=0;i--){dn+="L"+X(yrs[i]).toFixed(1)+" "+Y(lo[i]).toFixed(1)+" ";}
+    return `<path d="${up}${dn}Z" fill="${col}" opacity="0.85"/>`;}
+  const zero=yrs.map(()=>0), s1=sids, s2=sids.map((v,i)=>v+unk[i]), s3=s2.map((v,i)=>v+assb[i]);
+  s+=area(zero,s1,"#5ad19a")+area(s1,s2,"#ffb454")+area(s2,s3,"#ff5d5d");
+  let comp="";yrs.forEach((y,i)=>{comp+=(i?"L":"M")+X(y).toFixed(1)+" "+Y(s3[i]).toFixed(1)+" ";});
+  s+=`<path d="${comp}" fill="none" stroke="${INK}" stroke-width="2.2" stroke-dasharray="6 4"/>`;
+  // legend
+  const leg=[["SIDS (R95)","#5ad19a"],["Unknown (R99)","#ffb454"],["ASSB (W75)","#ff5d5d"],["SUID composite (flat)","#e6edf3"]];
+  let lx=ox+w-200,ly=pt+6;leg.forEach(([t,c])=>{s+=`<rect x="${lx}" y="${ly-8}" width="11" height="11" fill="${c}"/>`+txt(lx+16,ly+2,t,INK,11);ly+=18;});
+  s+=txt(pl,h-pb+44,"US rate per 100,000 live births",MUT,11,'start');
+  s+=txt(ox+20,h-pb+62,"SIDS reclassified into 'unknown' + ASSB over time — but the composite barely moves.",MUT,11.5,'start');
+  s+=txt(ox+20,h-pb+80,"That's why you compare R95+R99+W75, never the SIDS label alone.",MUT,11.5,'start');
+  return s;
+}
+function build(){
+  let s=`<svg id="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`;
+  s+=`<rect x="0" y="0" width="${W}" height="${H}" fill="#0b0f14"/>`;
+  s+=txt(W/2,28,"US vs Nordic Sudden Unexpected Infant Death (SUID) — denominated, like-for-like",INK,18,'middle','bold');
+  s+=panelA(20)+panelB(820);
+  s+=txt(W/2,H-30,"SUID = ICD-10 R95+R99+W75, under-1 · source: WHO Mortality Database + NCHS natality · neutral on safety · strong on method · a rate is not a cause",MUT,11,'middle');
+  s+=txt(W/2,H-12,"meridian-north.github.io/vaers-1990-2026-searchable/kennedy-miller-kit/",MUT,10,'middle');
+  s+=`</svg>`;
+  document.getElementById('wrap').innerHTML=s;
+}
+build();
+function dl(){
+  const svg=document.getElementById('svg');
+  const xml=new XMLSerializer().serializeToString(svg);
+  const img=new Image(); const scale=2;
+  img.onload=function(){
+    const c=document.createElement('canvas');c.width=W*scale;c.height=H*scale;
+    const ctx=c.getContext('2d');ctx.scale(scale,scale);ctx.drawImage(img,0,0);
+    const a=document.createElement('a');a.download='suid_us_vs_nordic_panel.png';a.href=c.toDataURL('image/png');a.click();
+  };
+  img.src='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(xml)));
+}
+</script>
+</body></html>
