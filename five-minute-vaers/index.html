@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5-Minute VAERS — proof of concept (synthetic demo)</title>
+<style>
+  :root{
+    --bg:#f4f2ec; --panel:#ffffff; --panel2:#efece4; --ink:#1e2630; --mut:#56616e;
+    --line:#d7d1c6; --acc:#345670; --accd:#284258;
+    --warn:#a85a52; --caution:#b5893f; --low:#5e8468;
+    --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,"Times New Roman",serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  header{padding:20px 24px 14px;border-bottom:2px solid var(--line);background:var(--panel)}
+  h1{margin:0 0 4px;font-family:var(--serif);font-size:24px;font-weight:600}
+  .sub{color:var(--mut);font-size:15px}
+  .badge{display:inline-block;background:#f1e2df;border:1px solid var(--warn);color:#5a2a25;
+    font-size:13px;font-weight:700;padding:3px 10px;border-radius:5px;margin-left:8px;vertical-align:2px}
+  .timers{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px}
+  .timer{flex:1;min-width:220px;border:1px solid var(--line);border-radius:8px;padding:12px 16px;background:var(--panel2)}
+  .timer .lab{font-size:13px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px}
+  .timer .val{font-family:var(--serif);font-size:34px;font-weight:700;line-height:1.1}
+  .timer.manual .val{color:var(--warn)} .timer.demo .val{color:var(--low)}
+  main{max-width:1100px;margin:0 auto;padding:20px 24px;display:grid;grid-template-columns:minmax(300px,1fr) minmax(360px,1.4fr);gap:20px}
+  @media(max-width:820px){main{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px}
+  h2{font-family:var(--serif);font-size:19px;margin:0 0 10px}
+  h3{font-size:14px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);margin:18px 0 6px}
+  label{display:block;font-size:13.5px;color:var(--mut);margin:10px 0 3px;font-weight:600}
+  input,select,textarea{width:100%;background:var(--panel);color:var(--ink);border:1px solid var(--line);
+    border-radius:6px;padding:9px;font-size:15px}
+  input:focus,select:focus,textarea:focus,button:focus-visible{outline:3px solid var(--acc);outline-offset:1px}
+  textarea{min-height:80px}
+  .auto{background:#eef2ec;border-color:#b9cdbf}
+  .autochip{display:inline-block;font-size:11px;font-weight:700;color:#2c4a39;background:#dce9e0;
+    border:1px solid #9dbcaa;border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:1px}
+  .needchip{display:inline-block;font-size:11px;font-weight:700;color:#5a2a25;background:#f1e2df;
+    border:1px solid var(--warn);border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:1px}
+  button.act{background:var(--accd);color:#fff;border:1px solid var(--accd);border-radius:6px;
+    padding:11px 18px;font-size:16px;font-weight:600;cursor:pointer}
+  button.ghost{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:6px;
+    padding:9px 14px;font-size:14px;cursor:pointer}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:6px}
+  th,td{border:1px solid var(--line);padding:6px 8px;text-align:left}
+  th{background:var(--panel2)}
+  .fhir{font-family:ui-monospace,Menlo,monospace;font-size:12px;white-space:pre-wrap;background:#fbfaf7;
+    border:1px solid var(--line);border-radius:6px;padding:10px;max-height:230px;overflow:auto;color:#33414e}
+  .checks label{display:flex;align-items:center;gap:8px;font-weight:400;color:var(--ink);margin:6px 0}
+  .checks input{width:auto}
+  .suggest{font-size:13px;color:var(--mut);margin-top:4px;min-height:20px}
+  .suggest b{color:var(--low)}
+  .note{font-size:13.5px;color:var(--mut)}
+  footer{max-width:1100px;margin:0 auto;padding:18px 24px 40px;color:var(--mut);font-size:13.5px}
+  .foot{border:1px solid var(--line);border-left:4px solid var(--acc);background:#eaeef2;color:#26333f;
+    border-radius:6px;padding:12px 14px;margin:8px 0;font-size:13.5px}
+  #preview{display:none;margin-top:16px}
+  .pv{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;white-space:pre-wrap;background:#fbfaf7;
+    border:1px solid var(--line);border-radius:6px;padding:14px;color:#222}
+</style>
+</head>
+<body>
+<header>
+  <h1>5-Minute VAERS <span class="badge">DEMO · synthetic · not a real report</span></h1>
+  <div class="sub">Proof of concept: the data the 30-minute form asks for already lives in the medical record. One click fills it in. Open-source · HIPAA-permitted · no real patient data.</div>
+  <div class="timers">
+    <div class="timer manual"><div class="lab">Today's manual form</div><div class="val">30:00</div></div>
+    <div class="timer demo"><div class="lab">This demo (live)</div><div class="val" id="clock">0:00</div></div>
+  </div>
+</header>
+
+<main>
+  <!-- LEFT: source -->
+  <section class="card">
+    <h2>1 · Pick a record, then import</h2>
+    <label for="pt">Synthetic patient (no real PHI)</label>
+    <select id="pt"></select>
+    <div class="row">
+      <button class="act" id="importBtn">⤵ Import from record</button>
+      <button class="ghost" id="resetBtn">Reset</button>
+    </div>
+    <h3>Source record (already structured in the EHR)</h3>
+    <div class="note">These FHIR resources exist before any form is touched. The form below is built from them — nothing is re-typed.</div>
+    <div class="fhir" id="fhir">Select a patient…</div>
+  </section>
+
+  <!-- RIGHT: form -->
+  <section class="card">
+    <h2>2 · The VAERS report</h2>
+    <div class="note" id="formHint">Click <b>Import from record</b> — every field marked <span class="autochip">auto</span> fills itself. You only complete the fields marked <span class="needchip">you</span>.</div>
+
+    <h3>Patient</h3>
+    <div class="grid2">
+      <div><label>Age at vaccination</label><input id="f_age" class="auto" readonly></div>
+      <div><label>Sex</label><input id="f_sex" class="auto" readonly></div>
+    </div>
+    <label>State</label><input id="f_state" class="auto" readonly>
+
+    <h3>Vaccine(s) given</h3>
+    <table id="f_vax"><tr><th>Vaccine</th><th>Manufacturer</th><th>Lot</th><th>Dose</th><th>Site/route</th><th>Date</th></tr></table>
+
+    <h3>Adverse event <span class="needchip">you</span></h3>
+    <label for="f_event">Describe what happened</label>
+    <textarea id="f_event" placeholder="e.g. Fever of 102°F and inconsolable crying beginning the evening after the visit…"></textarea>
+    <div class="suggest" id="meddra">MedDRA suggestion appears as you type… <span class="note">(demo stub list — production uses licensed MedDRA + gated model coding)</span></div>
+    <div class="grid2">
+      <div><label for="f_onset">Onset date <span class="needchip">you</span></label><input type="date" id="f_onset"></div>
+      <div><label>Interval from vaccination</label><input id="f_interval" class="auto" readonly></div>
+    </div>
+    <label>Outcomes <span class="needchip">you confirm</span></label>
+    <div class="checks">
+      <label><input type="checkbox" id="o_er"> Emergency room / urgent care</label>
+      <label><input type="checkbox" id="o_hosp"> Hospitalized</label>
+      <label><input type="checkbox" id="o_lt"> Life-threatening</label>
+      <label><input type="checkbox" id="o_dis"> Disability</label>
+      <label><input type="checkbox" id="o_died"> Death</label>
+      <label><input type="checkbox" id="o_rec"> Recovered</label>
+    </div>
+
+    <h3>History (auto from record)</h3>
+    <label>Medical history</label><input id="f_hist" class="auto" readonly>
+    <label>Concurrent medications</label><input id="f_meds" class="auto" readonly>
+    <label>Allergies</label><input id="f_allergy" class="auto" readonly>
+    <label>Prior vaccinations</label><input id="f_prior" class="auto" readonly>
+
+    <div class="row">
+      <button class="act" id="genBtn">✓ Generate VAERS report</button>
+      <button class="ghost" id="jsonBtn">⤓ Download JSON</button>
+      <button class="ghost" onclick="window.print()">🖨 Print</button>
+    </div>
+
+    <div id="preview">
+      <h3>VAERS-2 report preview</h3>
+      <div class="note">DEMO — synthetic data — this generates no real report.</div>
+      <div class="pv" id="pv"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="foot"><strong>Synthetic.</strong> Every patient here is fictional (Synthea-style). No real PHI. This tool submits nothing and generates no real report.</div>
+  <div class="foot"><strong>HIPAA permits this.</strong> Reporting adverse events to VAERS is a permitted public-health disclosure under 45 CFR 164.512(b), authorized by 42 U.S.C. 300aa-25 — no patient authorization required. HIPAA is a green light here, not a barrier.</div>
+  <div class="foot"><strong>A navigator, not medical advice.</strong> This demonstrates a reporting workflow. Clinical decisions belong with a clinician.</div>
+  <div class="foot"><strong>Open.</strong> Fork it, audit it, improve it. A 2011 government-funded project (ESP:VAERS / AHRQ) already proved auto-filing works — then shelved it. <em>Working 5-minute VAERS, open-source, HIPAA-permitted, built in a weekend. Why isn't this the national system?</em></div>
+  <div class="note">v0.1 proof of concept · front-end only · reference build for the React 19 port · part of the Meridian North / Garrison Node effort.</div>
+</footer>
+
+<script>
+// ---- synthetic patients (FHIR-ish, fictional) ----
+const PATIENTS = [
+  {id:"infant", label:"Infant · 4-month well-child visit",
+   patient:{birthDate:"2026-02-14", gender:"female", state:"OH"},
+   vaxDate:"2026-06-12",
+   immunizations:[
+     {vaccine:"DTaP-IPV-Hib (pentavalent)", cvx:"120", manufacturer:"Sanofi Pasteur", lot:"U7B23A", dose:"2", site:"left thigh", route:"IM", date:"2026-06-12"},
+     {vaccine:"Pneumococcal conjugate (PCV15)", cvx:"215", manufacturer:"Merck", lot:"PB4419", dose:"2", site:"right thigh", route:"IM", date:"2026-06-12"}
+   ],
+   conditions:["Born full-term, healthy"],
+   currentIllness:["None noted at visit"],
+   medications:["Vitamin D drops 400 IU daily"],
+   allergies:["None known"],
+   priorVaccines:["DTaP-IPV-Hib dose 1 (2026-04-10)","PCV dose 1 (2026-04-10)","HepB birth dose"]},
+  {id:"senior", label:"Adult · 67 · autumn flu + COVID",
+   patient:{birthDate:"1958-09-03", gender:"male", state:"AZ"},
+   vaxDate:"2026-10-08",
+   immunizations:[
+     {vaccine:"Influenza, high-dose (≥65)", cvx:"135", manufacturer:"Sanofi Pasteur", lot:"FL2261", dose:"1", site:"left deltoid", route:"IM", date:"2026-10-08"},
+     {vaccine:"COVID-19 (2026–27 formula)", cvx:"308", manufacturer:"Pfizer", lot:"CV8830", dose:"booster", site:"right deltoid", route:"IM", date:"2026-10-08"}
+   ],
+   conditions:["Type 2 diabetes","Hypertension"],
+   currentIllness:["None"],
+   medications:["Metformin 1000 mg BID","Lisinopril 20 mg daily"],
+   allergies:["Sulfa drugs (rash)"],
+   priorVaccines:["Influenza 2025","COVID-19 prior boosters","Tdap 2019","Shingrix x2 (2022)"]},
+  {id:"teen", label:"Adolescent · 15 · back-to-school visit",
+   patient:{birthDate:"2011-05-20", gender:"female", state:"TX"},
+   vaxDate:"2026-08-19",
+   immunizations:[
+     {vaccine:"Tdap", cvx:"115", manufacturer:"GSK", lot:"TD1190", dose:"booster", site:"left deltoid", route:"IM", date:"2026-08-19"},
+     {vaccine:"Meningococcal ACWY", cvx:"203", manufacturer:"Pfizer", lot:"MN5521", dose:"1", site:"left deltoid", route:"IM", date:"2026-08-19"},
+     {vaccine:"HPV (9-valent)", cvx:"165", manufacturer:"Merck", lot:"HP7744", dose:"1", site:"right deltoid", route:"IM", date:"2026-08-19"}
+   ],
+   conditions:["Mild asthma (well-controlled)"],
+   currentIllness:["None"],
+   medications:["Albuterol inhaler PRN"],
+   allergies:["None known"],
+   priorVaccines:["Childhood series complete","Influenza 2025"]}
+];
+
+// ---- MedDRA stub (demo only; not licensed MedDRA) ----
+const MEDDRA=[
+  [["fever","febrile","temperature","102","103","101"],"Pyrexia"],
+  [["seizure","convulsion","jerking"],"Febrile convulsion"],
+  [["cry","crying","inconsolable","irritable","fussy"],"Irritability"],
+  [["red","redness","erythema","injection site"],"Injection site erythema"],
+  [["swelling","swollen","injection site"],"Injection site swelling"],
+  [["pain","sore","ache","myalgia"],"Myalgia"],
+  [["faint","fainted","syncope","passed out","lightheaded"],"Syncope"],
+  [["rash","hives","urticaria","welts"],"Urticaria"],
+  [["breathing","short of breath","wheeze","apnea","apnoea","not breathing"],"Apnoea"],
+  [["anaphyl","throat","tongue swelling","face swelling"],"Anaphylactic reaction"],
+  [["vomit","vomiting","throwing up"],"Vomiting"],
+  [["diarrhea","diarrhoea"],"Diarrhoea"],
+  [["limp","floppy","hypotonia","unresponsive"],"Hypotonia"],
+  [["headache","head ache"],"Headache"],
+  [["dizzy","dizziness"],"Dizziness"]
+];
+function suggestMeddra(t){t=(t||"").toLowerCase();for(const[keys,pt]of MEDDRA){if(keys.some(k=>t.includes(k)))return pt;}return null;}
+
+// ---- state + helpers ----
+let timer=null, seconds=0;
+const $=id=>document.getElementById(id);
+function fmt(s){const m=Math.floor(s/60);return m+":"+String(s%60).padStart(2,"0");}
+function ageAt(dob,date){const a=new Date(date),b=new Date(dob);let m=(a.getFullYear()-b.getFullYear())*12+(a.getMonth()-b.getMonth());if(a.getDate()<b.getDate())m--;if(m<24){return m+" month"+(m===1?"":"s");}return Math.floor(m/12)+" years";}
+function daysBetween(a,b){return Math.round((new Date(b)-new Date(a))/86400000);}
+
+function currentPatient(){return PATIENTS.find(p=>p.id===$("pt").value);}
+function showFhir(p){
+  $("fhir").textContent=JSON.stringify({
+    resourceType:"Bundle (synthetic)",
+    Patient:{birthDate:p.patient.birthDate,gender:p.patient.gender,address:{state:p.patient.state}},
+    Immunization:p.immunizations.map(i=>({vaccineCode:{CVX:i.cvx,text:i.vaccine},lotNumber:i.lot,manufacturer:i.manufacturer,occurrenceDateTime:i.date,site:i.site,route:i.route,doseNumber:i.dose})),
+    Condition:p.conditions, MedicationStatement:p.medications, AllergyIntolerance:p.allergies, priorImmunization:p.priorVaccines
+  },null,1);
+}
+
+function importRecord(){
+  const p=currentPatient(); if(!p)return;
+  // start the live timer
+  if(timer)clearInterval(timer); seconds=0; $("clock").textContent="0:00";
+  timer=setInterval(()=>{seconds++;$("clock").textContent=fmt(seconds);},1000);
+  // autofill
+  $("f_age").value=ageAt(p.patient.birthDate,p.vaxDate)+" (DOB "+p.patient.birthDate+")";
+  $("f_sex").value=p.patient.gender;
+  $("f_state").value=p.patient.state;
+  let rows='<tr><th>Vaccine</th><th>Manufacturer</th><th>Lot</th><th>Dose</th><th>Site/route</th><th>Date</th></tr>';
+  p.immunizations.forEach(i=>{rows+=`<tr><td>${i.vaccine}</td><td>${i.manufacturer}</td><td>${i.lot}</td><td>${i.dose}</td><td>${i.site} / ${i.route}</td><td>${i.date}</td></tr>`;});
+  $("f_vax").innerHTML=rows;
+  $("f_hist").value=p.conditions.join("; ");
+  $("f_meds").value=p.medications.join("; ");
+  $("f_allergy").value=p.allergies.join("; ");
+  $("f_prior").value=p.priorVaccines.join("; ");
+  // default onset = vax date; compute interval
+  $("f_onset").value=p.vaxDate; updateInterval();
+  $("formHint").innerHTML='Imported. Every <span class="autochip">auto</span> field is filled from the record. Now just describe the event, confirm the onset date, and check the outcomes.';
+  $("f_event").focus();
+}
+function updateInterval(){
+  const p=currentPatient(); if(!p||!$("f_onset").value){$("f_interval").value="";return;}
+  const d=daysBetween(p.vaxDate,$("f_onset").value);
+  $("f_interval").value=(d===0?"same day":d+" day"+(d===1?"":"s"))+" after vaccination";
+}
+function generate(){
+  if(timer){clearInterval(timer);timer=null;}
+  const p=currentPatient(); if(!p)return;
+  const pt=suggestMeddra($("f_event").value);
+  const outcomes=[["o_er","ER/urgent care"],["o_hosp","Hospitalized"],["o_lt","Life-threatening"],["o_dis","Disability"],["o_died","Death"],["o_rec","Recovered"]]
+    .filter(([id])=>$(id).checked).map(([,l])=>l);
+  const report={
+    _demo:"SYNTHETIC — not a real VAERS report",
+    completed_in:fmt(seconds),
+    patient:{age_at_vaccination:ageAt(p.patient.birthDate,p.vaxDate),sex:p.patient.gender,state:p.patient.state},
+    vaccines:p.immunizations,
+    adverse_event:{description:$("f_event").value||"(none entered)",meddra_pt_suggested:pt||"(none matched)",onset_date:$("f_onset").value,interval:$("f_interval").value},
+    outcomes:outcomes.length?outcomes:["(none checked)"],
+    history:{medical:p.conditions,medications:p.medications,allergies:p.allergies,prior_vaccines:p.priorVaccines},
+    hipaa_basis:"45 CFR 164.512(b); 42 USC 300aa-25 — permitted public-health disclosure, no authorization required",
+    source:"auto-filled from FHIR record; only event/onset/outcomes entered by clinician"
+  };
+  $("pv").textContent=JSON.stringify(report,null,2);
+  $("preview").style.display="block";
+  $("preview").scrollIntoView({behavior:"smooth"});
+  window._report=report;
+}
+function downloadJson(){
+  const data=window._report||{note:"Generate a report first"};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="vaers_demo_synthetic.json";a.click();
+}
+function reset(){if(timer)clearInterval(timer);timer=null;seconds=0;$("clock").textContent="0:00";
+  ["f_age","f_sex","f_state","f_hist","f_meds","f_allergy","f_prior","f_event","f_onset","f_interval"].forEach(i=>$(i).value="");
+  ["o_er","o_hosp","o_lt","o_dis","o_died","o_rec"].forEach(i=>$(i).checked=false);
+  $("f_vax").innerHTML='<tr><th>Vaccine</th><th>Manufacturer</th><th>Lot</th><th>Dose</th><th>Site/route</th><th>Date</th></tr>';
+  $("preview").style.display="none"; $("meddra").innerHTML='MedDRA suggestion appears as you type…';
+}
+
+// ---- wire up ----
+PATIENTS.forEach(p=>{const o=document.createElement("option");o.value=p.id;o.textContent=p.label;$("pt").appendChild(o);});
+$("pt").addEventListener("change",()=>{showFhir(currentPatient());reset();});
+$("importBtn").addEventListener("click",importRecord);
+$("genBtn").addEventListener("click",generate);
+$("jsonBtn").addEventListener("click",downloadJson);
+$("resetBtn").addEventListener("click",reset);
+$("f_onset").addEventListener("change",updateInterval);
+$("f_event").addEventListener("input",e=>{const pt=suggestMeddra(e.target.value);
+  $("meddra").innerHTML=pt?`Suggested MedDRA term: <b>${pt}</b> <span class="note">(demo stub)</span>`:'MedDRA suggestion appears as you type… <span class="note">(demo stub list)</span>';});
+showFhir(PATIENTS[0]);
+</script>
+</body>
+</html>
