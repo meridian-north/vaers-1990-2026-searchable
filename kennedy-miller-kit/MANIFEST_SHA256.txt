@@ -1,6 +1,6 @@
 # MANIFEST_SHA256 — Kennedy-Miller VAERS Review Kit (v2 + Miller steelman + kmv-011 SUID)
 # corpus: meridian-north pharmacovigilance · VAERS 1990-2026 (n=1,989,028)
-# generated: 2026-06-17T04:27:17Z · verify: grep -v '^#' MANIFEST_SHA256.txt | shasum -a 256 -c
+# generated: 2026-06-17T04:35:04Z · verify: grep -v '^#' MANIFEST_SHA256.txt | shasum -a 256 -c
 #
 e85b766c4dc68758411961ecf500baa06c5b67863938fbbcd070912148314b2c  .DS_Store
 5f59d9d4ee3a6c54674cb17edf4ce151661a370e983096e65964e123a1ba8cac  data/age_of_death_infant_v2.csv
