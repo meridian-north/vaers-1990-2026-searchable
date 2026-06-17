@@ -15,11 +15,13 @@ A claim-navigator, not a claim-engine.
 | `STUDY_6axis_kennedy_miller_vaers.md` | The six-axis study — the substantive centerpiece |
 | `MILLER_STEELMAN.md` | Miller's actual argument from the primary source + fair rebuttal (contested ≠ dismissed) |
 | `V2_observed_vs_expected.md` | The age-confound analysis (v2) |
+| `DOCTRINE_sensor_sourced_reporting.md` | Forward note: when reports write themselves, the job is truth-of-path + identity |
 | `kennedy_miller_vaers_review.html` | Self-contained interactive webform (open in any browser) |
 | `OUTREACH_reply_seckennedy.md` | Short/threaded public reply drafts for the @SecKennedy thread |
 | `data/case_records_v2.csv` | Case-records corpus, v2 literature-index schema, embedded caveats |
 | `data/doo_distribution_sample.csv` | Days-to-onset sample pull, per-bucket, all cohorts |
 | `data/doo_summary.csv` | Days-to-onset summary (day 0–2 / 0–3 shares per cohort) |
+| `data/suid_crossnational_ok_rows.csv` | kmv-011: US vs Nordic SUID per 100k live births (WHO Mortality DB, the denominated comparison) |
 | `MANIFEST_SHA256.txt` | SHA-256 of every file — milspec replayability |
 
 ## The one finding (and its limits)
